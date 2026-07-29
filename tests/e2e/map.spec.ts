@@ -20,6 +20,16 @@ test('中文地图渲染完整数据并支持双语搜索', async ({ page }) => 
   expect(errors).toEqual([])
 })
 
+test('Tailwind v4 自定义主题通过 Vite 插件生效', async ({ page }) => {
+  await page.goto('/?lang=zh-CN')
+
+  const app = page.locator('.min-h-screen.bg-base.text-ink')
+  await expect(app).toHaveCSS('background-color', 'rgb(10, 14, 26)')
+  await expect(app).toHaveCSS('color', 'rgb(241, 245, 249)')
+  await expect(page.locator('.text-cyan').first()).toHaveCSS('color', 'rgb(6, 182, 212)')
+  await expect(page.locator('.font-display').first()).toHaveCSS('font-family', /Orbitron/)
+})
+
 test('路线深链、键盘平移和输入隔离保持有效', async ({ page }) => {
   await page.goto('/?lang=zh-CN&from=Argon%20Prime&to=Earth')
   await expect(page.locator('#mapPanel .pnl-name')).toHaveText('地球')

@@ -23,7 +23,7 @@ npm run dev
 npm run build          # 类型检查并生成 dist/
 npm test               # Vitest 单元及组件测试
 npm run test:e2e       # 构建后运行桌面与移动端 Playwright 测试
-npm run lint           # ESLint
+npm run lint           # Biome
 npm run typecheck      # TypeScript
 npm run verify:origin  # 校验原始归档 SHA-256
 npm run verify         # 全量验证

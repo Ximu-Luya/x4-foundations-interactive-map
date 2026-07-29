@@ -24,7 +24,7 @@
 | `map.js` 图算法 | `src/domain/universe.ts` | 邻接表、BFS、Kha'ak 距离、归一化、缩放和避让 |
 | `map.js` SVG/交互逻辑 | `src/map/createMap.ts` | 图层、筛选、面板、标记、路线和深链 |
 | 页面内联 HTML | React 页面组件 | 导航、地图、舰船资料、FAQ 和页脚 |
-| `tailwind.css` 与内联 CSS | Tailwind 源配置及 `src/styles/` | 重新获得可维护的样式输入 |
+| `tailwind.css` 与内联 CSS | Tailwind CSS v4 主题及 `src/styles/` | 重新获得可维护的样式输入 |
 
 ## 状态与兼容性
 

@@ -1,6 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-base: #0a0e1a;
+  --color-surface: #131826;
+  --color-surface2: #0f1422;
+  --color-line: #1f2a3d;
+  --color-subtle: #1e293b;
+  --color-ink: #f1f5f9;
+  --color-mute: #94a3b8;
+  --color-mute2: #64748b;
+  --color-cyan: #06b6d4;
+  --color-cyan2: #22d3ee;
+  --color-orange: #f97316;
+  --color-red: #ef4444;
+  --font-display: "Orbitron", ui-sans-serif, system-ui;
+  --font-ui: "Rajdhani", "Microsoft YaHei", "PingFang SC", system-ui;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
 
 :root {
   color-scheme: dark;
