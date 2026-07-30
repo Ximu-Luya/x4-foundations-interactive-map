@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Analytics } from '@vercel/analytics/react'
 
 import { derelictShips, timelineShips, universeData } from '../data'
 import { localeMetadata, normalizeLocale, supportedLocales, switchLocale } from '../i18n'
@@ -380,6 +381,7 @@ export function App() {
         )}
       </main>
       <Footer />
+      <Analytics />
     </div>
   )
 }
