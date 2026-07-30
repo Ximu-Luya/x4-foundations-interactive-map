@@ -7,7 +7,8 @@ test('中文地图渲染完整数据并支持双语搜索', async ({ page }) => 
   })
 
   await page.goto('/?lang=zh-CN')
-  await expect(page.locator('.mt-h')).toHaveText('宇宙地图')
+  await expect(page.locator('.mt-kicker')).toHaveText('X4: 基石 · V9.0')
+  await expect(page.locator('.mt-h')).toHaveCount(0)
   await expect(page.locator('#gHex path')).toHaveCount(152)
   await expect(page.locator('.edge')).toHaveCount(179)
 
@@ -21,6 +22,7 @@ test('中文地图渲染完整数据并支持双语搜索', async ({ page }) => 
 })
 
 test('Tailwind v4 自定义主题通过 Vite 插件生效', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('/?lang=zh-CN')
 
   const app = page.locator('.min-h-screen.bg-base.text-ink')
@@ -28,6 +30,8 @@ test('Tailwind v4 自定义主题通过 Vite 插件生效', async ({ page }) => 
   await expect(app).toHaveCSS('color', 'rgb(241, 245, 249)')
   await expect(page.locator('.text-cyan').first()).toHaveCSS('color', 'rgb(6, 182, 212)')
   await expect(page.locator('.font-display').first()).toHaveCSS('font-family', /Orbitron/)
+  await expect(page.locator('header nav').first()).toBeVisible()
+  await expect(page.locator('header nav').first()).toHaveCSS('font-size', '14px')
 
   const stationFinder = page.locator('#stationFinder')
   await expect(stationFinder).toHaveCSS('width', '268px')
@@ -35,6 +39,103 @@ test('Tailwind v4 自定义主题通过 Vite 插件生效', async ({ page }) => 
     (element) => element.scrollWidth > element.clientWidth,
   )
   expect(stationFinderOverflow).toBe(false)
+})
+
+test('语言下拉框保留当前页面参数并支持键盘原生选择', async ({ page }) => {
+  await page.goto('/?lang=zh-CN&from=Argon%20Prime&to=Earth')
+
+  const languageSelect = page.getByRole('combobox', { name: '选择语言' })
+  await expect(languageSelect).toHaveValue('zh-CN')
+  await expect(languageSelect.locator('option')).toHaveText(['简体中文', 'English'])
+  await languageSelect.selectOption('en-US')
+
+  await page.waitForURL((url) => {
+    return (
+      url.searchParams.get('lang') === 'en-US' &&
+      url.searchParams.get('from') === 'Argon Prime' &&
+      url.searchParams.get('to') === 'Earth'
+    )
+  })
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en-US')
+  await expect(page.getByRole('combobox', { name: 'Select language' })).toHaveValue('en-US')
+})
+
+test('页头只在更窄宽度切换为汉堡菜单', async ({ page }) => {
+  await page.setViewportSize({ width: 820, height: 844 })
+  await page.goto('/?lang=zh-CN')
+
+  await expect(page.locator('header nav').first()).toBeVisible()
+  await expect(page.getByRole('button', { name: '打开菜单' })).toBeHidden()
+
+  await page.goto('/?lang=en-US')
+  await expect(page.locator('header nav').first()).toBeVisible()
+  expect(
+    await page.locator('header > div').evaluate((element) => element.scrollWidth > element.clientWidth),
+  ).toBe(false)
+
+  await page.goto('/?lang=zh-CN')
+  await page.setViewportSize({ width: 740, height: 844 })
+  await expect(page.locator('header nav').first()).toBeHidden()
+  const menuButton = page.getByRole('button', { name: '打开菜单' })
+  await expect(menuButton).toBeVisible()
+  await expect(menuButton).toHaveText('')
+  await expect(menuButton.locator('svg')).toHaveCount(1)
+  await menuButton.click()
+  await expect(page.getByRole('button', { name: '关闭菜单' })).toBeVisible()
+
+  const mobileNavigation = page.locator('header nav:visible')
+  await expect(mobileNavigation).toHaveCSS('font-size', '14px')
+  await expect(mobileNavigation.getByRole('link', { name: '星区地图' })).toBeVisible()
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    ),
+  ).toBe(false)
+})
+
+test('地图顶部标题、搜索框和居中开关在窄宽度下正确对齐', async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 844 })
+  await page.goto('/?lang=zh-CN')
+
+  const title = page.locator('.mt-title')
+  const search = page.locator('#mapSearch')
+  await expect(title).toHaveCSS('height', '42px')
+  await expect(search).toHaveCSS('height', '42px')
+
+  const centerSwitch = page.getByRole('checkbox', { name: '点击星区后居中' })
+  const centerSwitchLabel = page.locator('#mapOptions label')
+  await expect(centerSwitch).toBeChecked()
+  await centerSwitchLabel.click()
+  await expect(centerSwitch).not.toBeChecked()
+  await centerSwitchLabel.click()
+  await expect(centerSwitch).toBeChecked()
+
+  const layout = await page.evaluate(() => {
+    const toolbar = document.querySelector<HTMLElement>('#mapTopL')!.getBoundingClientRect()
+    const options = document.querySelector<HTMLElement>('#mapOptions')!.getBoundingClientRect()
+    const stationFinder = document
+      .querySelector<HTMLElement>('#stationFinder')!
+      .getBoundingClientRect()
+    const switchStyle = getComputedStyle(document.querySelector<HTMLElement>('.opt-switch')!)
+    const overlapsStationFinder = !(
+      options.right <= stationFinder.left ||
+      options.left >= stationFinder.right ||
+      options.bottom <= stationFinder.top ||
+      options.top >= stationFinder.bottom
+    )
+    return {
+      toolbarRight: toolbar.right,
+      optionsRight: options.right,
+      optionsLeft: options.left,
+      switchRadius: Number.parseFloat(switchStyle.borderRadius),
+      overlapsStationFinder,
+    }
+  })
+
+  expect(Math.abs(layout.toolbarRight - layout.optionsRight)).toBeLessThanOrEqual(1)
+  expect(layout.optionsLeft).toBeGreaterThan(320)
+  expect(layout.switchRadius).toBeGreaterThanOrEqual(9)
+  expect(layout.overlapsStationFinder).toBe(false)
 })
 
 test('滚轮缩放平滑过渡', async ({ page }) => {
@@ -143,7 +244,7 @@ test('舰船发现状态沿用原 localStorage 键', async ({ page }) => {
 
 test('英文界面和旧页面地址保持兼容', async ({ page }) => {
   await page.goto('/?lang=en-US')
-  await expect(page.locator('.mt-h')).toHaveText('UNIVERSE MAP')
+  await expect(page.locator('.mt-kicker')).toHaveText('X4: Foundations · V9.0')
   await expect(page.getByPlaceholder('Search sector...')).toBeVisible()
 
   await page.goto('/guides/x4-universe-map.html?lang=zh-CN&sector=Earth')

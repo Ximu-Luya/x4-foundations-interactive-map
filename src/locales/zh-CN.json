@@ -1,14 +1,14 @@
 {
   "site": {
-    "project_name": "X4: 基石交互式宇宙地图",
-    "project_name_short": "X4 宇宙地图"
+    "project_name": "X4: 基石交互式地图",
+    "project_name_short": "X4 星区地图"
   },
   "seo": {
-    "page_title": "X4: 基石 v9.0 交互式地图、宇宙、免费及废弃舰船 | Veanturverse",
+    "page_title": "X4: 基石 v9.0 交互式星区地图、免费及废弃舰船 | Veanturverse",
     "description": "适用于 v9.0 的 X4 交互式星系与星区地图，涵盖全部 DLC 的所有星区、势力和星门，并标出免费、废弃及无主舰船的位置，提供星门航线规划。支持拖动、缩放和搜索。",
-    "open_graph_title": "X4: 基石 v9.0 交互式地图、宇宙、免费及废弃舰船",
+    "open_graph_title": "X4: 基石 v9.0 交互式星区地图、免费及废弃舰船",
     "open_graph_description": "探索完整的 X4: 基石宇宙，包括星区、势力、星门连接、免费/废弃舰船位置和航线规划。涵盖全部 DLC，适用于 v9.0。",
-    "twitter_description": "涵盖全部 DLC 的完整 X4 宇宙地图，标有免费/废弃舰船位置并提供星门航线规划。"
+    "twitter_description": "涵盖全部 DLC 的完整 X4 星区地图，标有免费/废弃舰船位置并提供星门航线规划。"
   },
   "free_ships_page": {
     "seo": {
@@ -19,7 +19,7 @@
       "kicker": "免费舰船指南",
       "title": "X4 废弃及无主舰船与位置",
       "intro": "X4: 基石中散落着大量无主弃船，从廉价侦察机到完整驱逐舰都有。穿太空服前往并完成认领，它们就能免费归你所有。下文包括认领方法、免费舰船排行、全部已知位置，以及九艘时间线奖励舰船（TL1 至 TL9）。",
-      "map_cta": "在 X4 交互式宇宙地图上查看全部免费舰船"
+      "map_cta": "在 X4 交互式星区地图上查看全部免费舰船"
     },
     "ranking": {
       "label": "快速排行",
@@ -27,7 +27,7 @@
       "intro": "六艘舰船都能免费认领，但价值并不相同。下方按获取收益排序，从完整驱逐舰到前期侦察机；选择舰船名称即可跳转到精确坐标。",
       "best_badge": "最佳免费舰船",
       "medium_badge": "最易获取的中型舰船",
-      "map_prompt": "准备出发时，可在 X4 交互式宇宙地图上查看全部弃船，并从当前星区规划逐个星门的航线。",
+      "map_prompt": "准备出发时，可在 X4 交互式星区地图上查看全部弃船，并从当前星区规划逐个星门的航线。",
       "items": {
         "odysseus_vanguard": "错误逻辑 VII。一艘生成时配备完整装备的 L 级驱逐舰；从 4.0 HF2 起，可独自太空行走至舰桥完成认领。",
         "osprey_vanguard": "公司关注。一艘免费的中型护卫舰，是清单中成本最低、收益最直接的升级。",
@@ -42,7 +42,7 @@
       "title": "时间线奖励舰船速览",
       "intro": "九艘时间线奖励舰船（TL1 至 TL9）需要通过完成对应的时间线场景解锁。解锁后，它们会出现在当前存档中，并可通过太空服认领。",
       "note": "只有完成对应的时间线任务后，这些舰船才会出现。",
-      "map_cta": "在 X4 交互式宇宙地图上查看这些舰船",
+      "map_cta": "在 X4 交互式星区地图上查看这些舰船",
       "items": {
         "xenon_b": "安提戈涅纪念碑。一艘位于星区左上方的 Xenon 护卫舰。",
         "cutlass": "异端终结。一艘位于星区西南远端、资源区之外的小型战斗机。",
@@ -97,7 +97,7 @@
     }
   },
   "navigation": {
-    "universe_map": "宇宙地图",
+    "universe_map": "星区地图",
     "free_ships_guide": "免费舰船指南",
     "original_site": "原站",
     "home": "首页",
@@ -113,7 +113,8 @@
   "accessibility": {
     "open_menu": "打开菜单",
     "close_menu": "关闭菜单",
-    "interactive_map": "X4 交互式宇宙地图",
+    "select_language": "选择语言",
+    "interactive_map": "X4 交互式星区地图",
     "ship_image": "舰船图片",
     "close_image": "关闭图片",
     "zoom_in": "放大",
@@ -122,8 +123,8 @@
     "close": "关闭"
   },
   "map": {
-    "kicker": "X4: 基石 - v9.0",
-    "title": "宇宙地图",
+    "kicker": "X4: 基石 · V9.0",
+    "title": "星区地图",
     "derelict_ships": "废弃舰船",
     "timeline_ships": "时间线舰船",
     "khaak_safe": "免受 Kha'ak 袭扰",
@@ -136,7 +137,7 @@
     "plot_route": "绘制航线",
     "clear": "清除",
     "search_sector_placeholder": "搜索星区...",
-    "recenter_on_click": "点击后重新居中",
+    "recenter_on_click": "点击星区后居中",
     "drag_zoom_hint": "拖动平移 - 滚轮缩放 - 方向键 / WASD 移动 - 点击星区",
     "route_pick_hint": "点击起始星系 - 按 Esc 取消",
     "no_match": "无匹配结果",

@@ -31,8 +31,8 @@ function ProjectName({ responsive = false }: { responsive?: boolean }) {
   if (responsive) {
     return (
       <>
-        <span className="sm:hidden">{t('site.project_name_short')}</span>
-        <span className="hidden sm:inline">{t('site.project_name')}</span>
+        <span className="xl:hidden">{t('site.project_name_short')}</span>
+        <span className="hidden xl:inline">{t('site.project_name')}</span>
       </>
     )
   }
@@ -68,7 +68,7 @@ function Header({ page }: { page: SitePage }) {
             <ProjectName responsive />
           </span>
         </a>
-        <nav className="hidden items-center gap-6 font-mono text-[10px] uppercase tracking-[0.18em] text-mute md:flex">
+        <nav className="hidden items-center gap-4 font-mono text-sm uppercase tracking-[0.08em] text-mute md:flex">
           {links.map(({ active, external, href, label }) => (
             <a
               key={href}
@@ -83,32 +83,60 @@ function Header({ page }: { page: SitePage }) {
           ))}
         </nav>
         <div className="flex items-center gap-3">
-          <div className="flex border border-line bg-surface p-0.5 font-mono text-[10px]">
-            {supportedLocales.map((locale) => (
-              <button
-                key={locale}
-                type="button"
-                className={`px-2 py-1 ${activeLocale === locale ? 'bg-cyan text-base' : 'text-mute'}`}
-                aria-pressed={activeLocale === locale}
-                onClick={() => activeLocale !== locale && switchLocale(locale)}
-              >
-                {localeMetadata[locale].shortLabel}
-              </button>
-            ))}
+          <div className="relative">
+            <select
+              aria-label={t('accessibility.select_language')}
+              className="min-w-32 appearance-none border border-line bg-surface py-1.5 pr-8 pl-3 font-mono text-xs tracking-[0.08em] text-ink transition-colors hover:border-cyan/70 focus:border-cyan focus:outline-none"
+              value={activeLocale}
+              onChange={(event) => {
+                const locale = normalizeLocale(event.target.value)
+                if (locale && locale !== activeLocale) switchLocale(locale)
+              }}
+            >
+              {supportedLocales.map((locale) => (
+                <option key={locale} value={locale}>
+                  {localeMetadata[locale].languageName}
+                </option>
+              ))}
+            </select>
+            <svg
+              aria-hidden="true"
+              className="pointer-events-none absolute top-1/2 right-2.5 size-3 -translate-y-1/2 text-cyan"
+              viewBox="0 0 12 12"
+              fill="none"
+            >
+              <path d="m2.5 4.25 3.5 3.5 3.5-3.5" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
           </div>
           <button
             type="button"
-            className="font-mono text-xs uppercase tracking-widest text-cyan md:hidden"
+            className="grid size-9 place-items-center border border-line bg-surface text-cyan transition-colors hover:border-cyan/70 md:hidden"
             aria-expanded={menuOpen}
-            aria-label={t('accessibility.open_menu')}
+            aria-label={
+              menuOpen ? t('accessibility.close_menu') : t('accessibility.open_menu')
+            }
             onClick={() => setMenuOpen((open) => !open)}
           >
-            Menu
+            <svg
+              aria-hidden="true"
+              className="size-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+            >
+              {menuOpen ? (
+                <path d="M6 6l12 12M18 6 6 18" />
+              ) : (
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
           </button>
         </div>
       </div>
       {menuOpen ? (
-        <nav className="absolute inset-x-0 top-16 flex flex-col gap-4 border-b border-line bg-base p-6 font-mono text-xs uppercase tracking-widest md:hidden">
+        <nav className="absolute inset-x-0 top-16 flex flex-col gap-4 border-b border-line bg-base p-6 font-mono text-sm uppercase tracking-[0.12em] md:hidden">
           {links.map(({ active, external, href, label }) => (
             <a
               key={href}

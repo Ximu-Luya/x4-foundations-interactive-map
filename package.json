@@ -1,7 +1,7 @@
 {
   "name": "x4-foundations-interactive-map",
   "version": "0.1.0",
-  "description": "可本地化、可扩展的 X4: Foundations 交互式宇宙地图",
+  "description": "可本地化、可扩展的 X4: Foundations 交互式星区地图",
   "private": true,
   "type": "module",
   "engines": {
@@ -21,7 +21,7 @@
   },
   "keywords": [
     "x4-foundations",
-    "universe-map",
+    "sector-map",
     "react",
     "typescript"
   ],

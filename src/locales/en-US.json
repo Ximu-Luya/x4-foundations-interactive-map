@@ -1,14 +1,14 @@
 {
   "site": {
     "project_name": "X4 FOUNDATIONS INTERACTIVE MAP",
-    "project_name_short": "X4 UNIVERSE MAP"
+    "project_name_short": "X4 SECTOR MAP"
   },
   "seo": {
-    "page_title": "X4 Foundations Interactive Map v9.0, Universe, Free & Derelict Ships | Veanturverse",
+    "page_title": "X4 Foundations Interactive Sector Map v9.0, Free & Derelict Ships | Veanturverse",
     "description": "Interactive X4 galaxy & sector map for v9.0, every sector, faction and gate across all DLCs, plus free, derelict & abandoned ship locations and a jump-gate route planner. Pan, zoom, search.",
-    "open_graph_title": "X4 Foundations Interactive Map v9.0, Universe, Free & Derelict Ships",
+    "open_graph_title": "X4 Foundations Interactive Sector Map v9.0, Free & Derelict Ships",
     "open_graph_description": "Explore the full X4: Foundations universe, sectors, factions, gate links, free/derelict ship locations and a route planner. All DLCs, v9.0.",
-    "twitter_description": "Full X4 universe map across all DLCs with free/derelict ship locations and a jump-gate route planner."
+    "twitter_description": "Full X4 sector map across all DLCs with free/derelict ship locations and a jump-gate route planner."
   },
   "free_ships_page": {
     "seo": {
@@ -19,7 +19,7 @@
       "kicker": "Free Ships Guide",
       "title": "X4 Abandoned & Derelict Ships and Locations",
       "intro": "X4: Foundations is full of abandoned ships, ownerless derelicts just sitting there, from cheap scouts to full destroyers. Fly out, claim them in your spacesuit, and they're yours for free. Below: how claiming works, the best free ships ranked, every known location, and the nine Timelines reward ships (TL1 to TL9).",
-      "map_cta": "See every free ship on the interactive X4 universe map"
+      "map_cta": "See every free ship on the interactive X4 sector map"
     },
     "ranking": {
       "label": "The Shortlist",
@@ -27,7 +27,7 @@
       "intro": "All six are free, but they aren't equal. Here are the abandoned & derelict ships ranked by what you get for the trip, from a full destroyer down to early-game scouts. Select any name for exact coordinates.",
       "best_badge": "Best free ship",
       "medium_badge": "Easiest medium",
-      "map_prompt": "Planning the trip? See every wreck on the interactive X4 universe map and plot a gate-by-gate route from your start sector.",
+      "map_prompt": "Planning the trip? See every wreck on the interactive X4 sector map and plot a gate-by-gate route from your start sector.",
       "items": {
         "odysseus_vanguard": "Faulty Logic VII. A full L-class destroyer that spawns fully equipped; since 4.0 HF2 you can claim it solo by spacewalking to the bridge.",
         "osprey_vanguard": "Company Regard. A free medium frigate and the best low-effort upgrade on the list.",
@@ -42,7 +42,7 @@
       "title": "Timeline reward ships at a glance",
       "intro": "The nine Timelines reward ships (TL1 to TL9) are unlocked by completing Timelines scenarios. Each appears in your save afterwards and can be claimed in a spacesuit.",
       "note": "Timeline ships appear only after the matching Timelines mission is completed.",
-      "map_cta": "View these ships on the interactive X4 universe map",
+      "map_cta": "View these ships on the interactive X4 sector map",
       "items": {
         "xenon_b": "Antigone Memorial. A Xenon frigate in the upper-left of the sector.",
         "cutlass": "Heretic's End. A small fighter far south-west of the sector, outside the resource area.",
@@ -97,7 +97,7 @@
     }
   },
   "navigation": {
-    "universe_map": "Universe Map",
+    "universe_map": "Sector Map",
     "free_ships_guide": "Free Ships Guide",
     "original_site": "Original Site",
     "home": "Home",
@@ -113,7 +113,8 @@
   "accessibility": {
     "open_menu": "Open menu",
     "close_menu": "Close menu",
-    "interactive_map": "Interactive X4 universe map",
+    "select_language": "Select language",
+    "interactive_map": "Interactive X4 sector map",
     "ship_image": "Ship image",
     "close_image": "Close image",
     "zoom_in": "Zoom in",
@@ -122,8 +123,8 @@
     "close": "Close"
   },
   "map": {
-    "kicker": "X4 Foundations - v9.0",
-    "title": "UNIVERSE MAP",
+    "kicker": "X4: Foundations · V9.0",
+    "title": "SECTOR MAP",
     "derelict_ships": "Derelict Ships",
     "timeline_ships": "Timeline Ships",
     "khaak_safe": "Kha'ak-safe",
@@ -136,7 +137,7 @@
     "plot_route": "Plot route",
     "clear": "Clear",
     "search_sector_placeholder": "Search sector...",
-    "recenter_on_click": "Recenter on click",
+    "recenter_on_click": "Center after clicking a sector",
     "drag_zoom_hint": "Drag to pan - Scroll to zoom - Arrow keys / WASD to move - Click a sector",
     "route_pick_hint": "Click your start system - Esc to cancel",
     "no_match": "No match",
