@@ -142,6 +142,8 @@
     "route_pick_hint": "点击起始星系 - 按 Esc 取消",
     "no_match": "无匹配结果",
     "find_a_station": "查找空间站",
+    "mobile_tools": "地图工具",
+    "legend": "图例",
     "toggle_derelicts_title": "显示或隐藏废弃舰船和时间线奖励舰船的位置",
     "toggle_timeline_title": "显示或隐藏时间线奖励舰船的位置",
     "toggle_khaak_title": "高亮不会遭到 Kha'ak 袭击的星区（距巢穴超过 3 次跳跃）",

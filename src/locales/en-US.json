@@ -142,6 +142,8 @@
     "route_pick_hint": "Click your start system - Esc to cancel",
     "no_match": "No match",
     "find_a_station": "Find a station",
+    "mobile_tools": "Map tools",
+    "legend": "Legend",
     "toggle_derelicts_title": "Toggle derelict & timeline-reward ship locations",
     "toggle_timeline_title": "Toggle Timeline-reward ship locations",
     "toggle_khaak_title": "Highlight sectors safe from Kha'ak raids (more than 3 jumps from a hive)",

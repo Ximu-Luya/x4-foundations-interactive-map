@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { createMap } from './createMap'
@@ -9,6 +9,8 @@ export function MapShell() {
   const { t } = useTranslation()
   const rootRef = useRef<HTMLElement>(null)
   const apiRef = useRef<X4MapApi | null>(null)
+  const [mobileToolsOpen, setMobileToolsOpen] = useState(false)
+  const [mobileLegendOpen, setMobileLegendOpen] = useState(false)
 
   useMapKeyboard(rootRef, apiRef)
 
@@ -50,8 +52,28 @@ export function MapShell() {
         <div className="lb-cap" />
       </div>
 
-      <div id="mapTopL" className="ov">
-        <div className="map-top-left">
+      <div id="mapTopL" className={`ov ${mobileToolsOpen ? 'mobile-tools-open' : ''}`}>
+        <button
+          id="mobileToolsToggle"
+          className="mobile-map-toggle panelbox"
+          type="button"
+          aria-controls="mapMobileTools"
+          aria-expanded={mobileToolsOpen}
+          onClick={() => {
+            setMobileToolsOpen((open) => !open)
+            setMobileLegendOpen(false)
+          }}
+        >
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeLinecap="round" />
+            <circle cx="7" cy="5" r="1.5" fill="currentColor" />
+            <circle cx="13" cy="10" r="1.5" fill="currentColor" />
+            <circle cx="9" cy="15" r="1.5" fill="currentColor" />
+          </svg>
+          <span>{t('map.mobile_tools')}</span>
+        </button>
+
+        <div id="mapMobileTools" className="map-top-left">
           <div className="map-toolbar-actions">
             <div className="mt-title panelbox relative">
               <span className="corner tl text-cyan" />
@@ -101,6 +123,13 @@ export function MapShell() {
             >
               <span className="lens-ic">▸</span> {t('map.plan_route')}
             </button>
+            <div id="mapOptions" className="panelbox">
+              <label className="opt">
+                <span>{t('map.recenter_on_click')}</span>
+                <input type="checkbox" id="optCenter" />
+                <span className="opt-switch" aria-hidden="true" />
+              </label>
+            </div>
           </div>
 
           <div id="routePlanner" className="panelbox">
@@ -160,13 +189,6 @@ export function MapShell() {
             />
             <ul id="searchResults" className="panelbox" />
           </div>
-          <div id="mapOptions" className="panelbox">
-            <label className="opt">
-              <span>{t('map.recenter_on_click')}</span>
-              <input type="checkbox" id="optCenter" />
-              <span className="opt-switch" aria-hidden="true" />
-            </label>
-          </div>
         </div>
       </div>
 
@@ -174,7 +196,27 @@ export function MapShell() {
         <div id="shipsIndex" className="panelbox" />
         <div id="timelineIndex" className="panelbox" />
       </div>
-      <div id="mapLegend" className="ov panelbox" />
+      <button
+        id="mobileLegendToggle"
+        className="ov mobile-map-toggle panelbox"
+        type="button"
+        aria-controls="mapLegend"
+        aria-expanded={mobileLegendOpen}
+        onClick={() => {
+          setMobileLegendOpen((open) => !open)
+          setMobileToolsOpen(false)
+        }}
+      >
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="m10 3 7 4-7 4-7-4 7-4Z" stroke="currentColor" strokeLinejoin="round" />
+          <path d="m3 11 7 4 7-4M3 15l7 4 7-4" stroke="currentColor" strokeLinejoin="round" />
+        </svg>
+        <span>{t('map.legend')}</span>
+      </button>
+      <div
+        id="mapLegend"
+        className={`ov panelbox ${mobileLegendOpen ? 'mobile-open' : ''}`}
+      />
 
       <div id="mapZoom" className="ov">
         <button id="zoomIn" className="panelbox" aria-label={t('accessibility.zoom_in')}>

@@ -97,8 +97,17 @@ test('地图顶部标题、搜索框和居中开关在窄宽度下正确对齐',
   await page.setViewportSize({ width: 640, height: 844 })
   await page.goto('/?lang=zh-CN')
 
+  const toolsToggle = page.getByRole('button', { name: '地图工具' })
+  await expect(toolsToggle).toBeVisible()
+  await expect(toolsToggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(page.locator('#mapMobileTools')).toBeHidden()
+  await expect(page.locator('#mapOptions')).toBeHidden()
+  await toolsToggle.click()
+  await expect(toolsToggle).toHaveAttribute('aria-expanded', 'true')
+
   const title = page.locator('.mt-title')
   const search = page.locator('#mapSearch')
+  await expect(title).toBeVisible()
   await expect(title).toHaveCSS('height', '42px')
   await expect(search).toHaveCSS('height', '42px')
 
@@ -111,7 +120,6 @@ test('地图顶部标题、搜索框和居中开关在窄宽度下正确对齐',
   await expect(centerSwitch).toBeChecked()
 
   const layout = await page.evaluate(() => {
-    const toolbar = document.querySelector<HTMLElement>('#mapTopL')!.getBoundingClientRect()
     const options = document.querySelector<HTMLElement>('#mapOptions')!.getBoundingClientRect()
     const stationFinder = document
       .querySelector<HTMLElement>('#stationFinder')!
@@ -124,18 +132,25 @@ test('地图顶部标题、搜索框和居中开关在窄宽度下正确对齐',
       options.top >= stationFinder.bottom
     )
     return {
-      toolbarRight: toolbar.right,
-      optionsRight: options.right,
-      optionsLeft: options.left,
+      optionsAfterRoute:
+        document.querySelector<HTMLElement>('#routePlanBtn')!.nextElementSibling ===
+        document.querySelector<HTMLElement>('#mapOptions'),
       switchRadius: Number.parseFloat(switchStyle.borderRadius),
       overlapsStationFinder,
     }
   })
 
-  expect(Math.abs(layout.toolbarRight - layout.optionsRight)).toBeLessThanOrEqual(1)
-  expect(layout.optionsLeft).toBeGreaterThan(320)
+  expect(layout.optionsAfterRoute).toBe(true)
   expect(layout.switchRadius).toBeGreaterThanOrEqual(9)
   expect(layout.overlapsStationFinder).toBe(false)
+
+  const legendToggle = page.getByRole('button', { name: '图例' })
+  await expect(page.locator('#mapLegend')).toBeHidden()
+  await legendToggle.click()
+  await expect(legendToggle).toHaveAttribute('aria-expanded', 'true')
+  await expect(page.locator('#mapLegend')).toBeVisible()
+  await expect(toolsToggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(page.locator('#mapMobileTools')).toBeHidden()
 })
 
 test('滚轮缩放平滑过渡', async ({ page }) => {
@@ -176,6 +191,8 @@ test('滚轮缩放平滑过渡', async ({ page }) => {
 test('图例筛选会按源站层级隐化非匹配星区及其附属图层', async ({ page }) => {
   await page.goto('/?lang=zh-CN')
 
+  const legendToggle = page.getByRole('button', { name: '图例' })
+  if (await legendToggle.isVisible()) await legendToggle.click()
   await page.getByRole('button', { name: 'Argon', exact: true }).click()
   await expect(page.locator('.hex.filter-dim')).toHaveCount(140)
   await expect(page.locator('.hex.filter-dim').first()).toHaveCSS('opacity', '0.16')
@@ -184,6 +201,8 @@ test('图例筛选会按源站层级隐化非匹配星区及其附属图层', as
   expect(await page.locator('.stn-one.filter-dim').count()).toBeGreaterThan(0)
 
   await page.getByRole('button', { name: 'Argon', exact: true }).click()
+  const toolsToggle = page.getByRole('button', { name: '地图工具' })
+  if (await toolsToggle.isVisible()) await toolsToggle.click()
   await page.getByRole('button', { name: '造船厂', exact: true }).click()
   await expect(page.locator('.hex.stn-match')).toHaveCount(21)
   await expect(page.locator('.hex.filter-dim')).toHaveCount(131)
@@ -232,12 +251,15 @@ test('路线深链、键盘平滑移动和输入隔离保持有效', async ({ pa
 
 test('舰船发现状态沿用原 localStorage 键', async ({ page }) => {
   await page.goto('/?lang=zh-CN')
+  const toolsToggle = page.getByRole('button', { name: '地图工具' })
+  if (await toolsToggle.isVisible()) await toolsToggle.click()
   await page.getByRole('button', { name: '◆ 废弃舰船' }).click()
   await page.locator('[data-found="elite-vanguard"]').click()
   const stored = await page.evaluate(() => localStorage.getItem('vv_x4_found'))
   expect(JSON.parse(stored ?? '[]')).toContain('elite-vanguard')
 
   await page.reload()
+  if (await toolsToggle.isVisible()) await toolsToggle.click()
   await page.getByRole('button', { name: '◆ 废弃舰船' }).click()
   await expect(page.locator('[data-slug="elite-vanguard"]')).toHaveClass(/found/)
 })
