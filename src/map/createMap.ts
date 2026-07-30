@@ -19,6 +19,7 @@ export function createMap(options = {}) {
   const tr = (key, fallback, values = {}) =>
     options.t ? options.t(key, { defaultValue: fallback, ...values }) : fallback;
   const sectorLabel = name => tr(`sectors.${name}`, name);
+  const guideHref = slug => `./free-ships/?lang=${encodeURIComponent(document.documentElement.lang || 'zh-CN')}#ship-${slug}`;
   const U = universeData;
   if (!U) { console.error('X4_UNIVERSE data missing'); return; }
   const SVGNS = 'http://www.w3.org/2000/svg';
@@ -520,6 +521,9 @@ export function createMap(options = {}) {
   // ---- view transform (pan / zoom) ----
   let scale = 1, tx = 0, ty = 0;
   let vw = 0, vh = 0, clpx = 9;
+  let zoomFrame = 0, zoomTime = 0;
+  let targetScale = scale, targetTx = tx, targetTy = ty;
+  const ZOOM_RESPONSE = 18;
   function measure() { const r = svg.getBoundingClientRect(); vw = r.width; vh = r.height; }
   function apply() {
     gView.setAttribute('transform', `translate(${tx} ${ty}) scale(${scale})`);
@@ -532,6 +536,38 @@ export function createMap(options = {}) {
     updateLabelVisibility();
     updatePins();
   }
+  function cancelZoomAnimation() {
+    if (zoomFrame) cancelAnimationFrame(zoomFrame);
+    zoomFrame = 0;
+    zoomTime = 0;
+    targetScale = scale;
+    targetTx = tx;
+    targetTy = ty;
+  }
+  function animateZoom(time) {
+    const elapsed = Math.min(time - zoomTime, 50) / 1000;
+    const blend = 1 - Math.exp(-ZOOM_RESPONSE * elapsed);
+    scale += (targetScale - scale) * blend;
+    tx += (targetTx - tx) * blend;
+    ty += (targetTy - ty) * blend;
+    zoomTime = time;
+
+    const settled = Math.abs(targetScale - scale) < 0.0001
+      && Math.abs(targetTx - tx) < 0.05
+      && Math.abs(targetTy - ty) < 0.05;
+    if (settled) {
+      scale = targetScale;
+      tx = targetTx;
+      ty = targetTy;
+      zoomFrame = 0;
+      zoomTime = 0;
+      apply();
+      return;
+    }
+
+    apply();
+    zoomFrame = requestAnimationFrame(animateZoom);
+  }
   let panFrame = 0, pendingPanX = 0, pendingPanY = 0;
   function panBy(dx, dy) {
     pendingPanX += dx;
@@ -540,6 +576,10 @@ export function createMap(options = {}) {
     panFrame = requestAnimationFrame(() => {
       tx += pendingPanX;
       ty += pendingPanY;
+      if (zoomFrame) {
+        targetTx += pendingPanX;
+        targetTy += pendingPanY;
+      }
       pendingPanX = 0;
       pendingPanY = 0;
       panFrame = 0;
@@ -547,6 +587,7 @@ export function createMap(options = {}) {
     });
   }
   function fit(pad = 0.08) {
+    cancelZoomAnimation();
     measure();
     const s = Math.min(vw / WORLD_W, vh / WORLD_H) * (1 - pad);
     scale = s;
@@ -555,12 +596,20 @@ export function createMap(options = {}) {
     apply();
   }
   function zoomAt(cx, cy, factor) {
-    const ns = Math.min(8, Math.max(0.18, scale * factor));
-    const k = ns / scale;
-    tx = cx - (cx - tx) * k;
-    ty = cy - (cy - ty) * k;
-    scale = ns;
-    apply();
+    if (!zoomFrame) {
+      targetScale = scale;
+      targetTx = tx;
+      targetTy = ty;
+    }
+    const ns = Math.min(8, Math.max(0.18, targetScale * factor));
+    const k = ns / targetScale;
+    targetTx = cx - (cx - targetTx) * k;
+    targetTy = cy - (cy - targetTy) * k;
+    targetScale = ns;
+    if (!zoomFrame) {
+      zoomTime = performance.now();
+      zoomFrame = requestAnimationFrame(animateZoom);
+    }
   }
 
   const SECTOR_T = 0.5; // at/above this zoom show sectors; below show clusters
@@ -627,6 +676,7 @@ export function createMap(options = {}) {
   let dragging = false, moved = false, px = 0, py = 0, downX = 0, downY = 0;
   svg.addEventListener('pointerdown', e => {
     root.focus({ preventScroll: true });
+    cancelZoomAnimation();
     dragging = true; moved = false;
     px = downX = e.clientX; py = downY = e.clientY;
     // NOTE: do NOT capture here, capturing on pointerdown redirects the
@@ -649,7 +699,9 @@ export function createMap(options = {}) {
   svg.addEventListener('wheel', e => {
     e.preventDefault();
     const r = svg.getBoundingClientRect();
-    zoomAt(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.16 : 1 / 1.16);
+    const unit = e.deltaMode === WheelEvent.DOM_DELTA_LINE ? 16 : e.deltaMode === WheelEvent.DOM_DELTA_PAGE ? vh : 1;
+    const delta = Math.max(-240, Math.min(240, e.deltaY * unit));
+    zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-delta * 0.0015));
   }, { passive: false });
 
   // hover + click via hit targets
@@ -964,7 +1016,7 @@ export function createMap(options = {}) {
               <div class="pnl-ship-role">${esc(d.role)}${d.coords ? ' · <span class="mono">' + esc(d.coords) + '</span>' : ''}</div>
               <div class="pnl-ship-find">${esc(d.find)}</div>
               ${d.danger ? `<div class="pnl-ship-warn">⚠ ${esc(d.dangerNote || '')}</div>` : ''}
-              <a class="pnl-ship-link" href="https://veanturverse.com/guides/x4-derelict-ships.html#ship-${d.slug}">${esc(tr('runtime.open_full_guide', 'Open full guide'))} &rarr;</a>
+              <a class="pnl-ship-link" href="${guideHref(d.slug)}">${esc(tr('runtime.open_full_guide', 'Open full guide'))} &rarr;</a>
               <button class="pnl-found${isFound(d.slug) ? ' on' : ''}" data-found="${d.slug}">${isFound(d.slug) ? '✓ ' + esc(tr('runtime.found', 'Found')) : esc(tr('runtime.mark_as_found', 'Mark as found'))}</button>
             </div>
           </div>`).join('')}
@@ -983,7 +1035,7 @@ export function createMap(options = {}) {
               ${d.find ? `<div class="pnl-tl-find">${esc(d.find)}</div>` : ''}
               ${d.claim ? `<div class="pnl-tl-find">${esc(d.claim)}</div>` : ''}
               ${d.danger ? `<div class="pnl-ship-warn">⚠ ${esc(d.dangerNote || '')}</div>` : ''}
-              <a class="pnl-ship-link" style="color:#c4a5f7" href="https://veanturverse.com/guides/x4-derelict-ships.html#ship-${d.slug}">${esc(tr('runtime.open_full_guide', 'Open full guide'))} &rarr;</a>
+              <a class="pnl-ship-link" style="color:#c4a5f7" href="${guideHref(d.slug)}">${esc(tr('runtime.open_full_guide', 'Open full guide'))} &rarr;</a>
               <button class="pnl-found${isFoundTl(d.slug) ? ' on' : ''}" data-found-tl="${d.slug}">${isFoundTl(d.slug) ? '✓ ' + esc(tr('runtime.found', 'Found')) : esc(tr('runtime.mark_as_found', 'Mark as found'))}</button>
             </div>
           </div>`).join('')}
@@ -1057,6 +1109,7 @@ export function createMap(options = {}) {
     return routePath;
   }
   function fitBounds(ids) {
+    cancelZoomAnimation();
     const lxs = ids.map(i => sectors[i].lx), lys = ids.map(i => sectors[i].ly);
     const minX = Math.min(...lxs), maxX = Math.max(...lxs), minY = Math.min(...lys), maxY = Math.max(...lys);
     const w = Math.max(maxX - minX, 160), h = Math.max(maxY - minY, 160);
@@ -1073,6 +1126,7 @@ export function createMap(options = {}) {
     selected = null; resetRouteState(); panel.classList.remove('open'); refreshEmphasis();
   }
   function flyTo(id, zoom = true, zoomLevel) {
+    cancelZoomAnimation();
     const s = sectors[id];
     const target = zoomLevel != null ? zoomLevel : (zoom ? Math.max(scale, 1.4) : scale);
     scale = target;
@@ -1234,16 +1288,11 @@ export function createMap(options = {}) {
   setStyle('hex');
   buildLegend();
   buildStationFinder();
-  function syncFinderWidth() {
-    const t = document.querySelector('.mt-title'), f = document.getElementById('stationFinder');
-    if (t && f) f.style.width = Math.round(t.getBoundingClientRect().width) + 'px';
-  }
-  syncFinderWidth();
-  window.addEventListener('resize', () => { measure(); apply(); syncFinderWidth(); });
+  window.addEventListener('resize', () => { measure(); apply(); });
   function init() { measure(); if (selected == null) fit(); else apply(); refreshEmphasis(); root.classList.add('ready'); }
   init();                                   // DOM is ready (script at end of body)
-  requestAnimationFrame(() => { init(); syncFinderWidth(); }); // re-fit & align once layout settles
-  window.addEventListener('load', () => { measure(); if (selected == null) fit(); else apply(); syncFinderWidth(); });
+  requestAnimationFrame(() => { init(); }); // re-fit once layout settles
+  window.addEventListener('load', () => { measure(); if (selected == null) fit(); else apply(); });
 
   // deep link: ?ship=<slug>  or  ?sector=<Name>
   (function deepLink() {

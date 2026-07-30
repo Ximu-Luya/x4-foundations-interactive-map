@@ -4,12 +4,13 @@
 
 原站不是 React 应用，而是一个 HTML 页面、Tailwind CSS 编译产物和九个原生 JavaScript 文件。发布物没有 source map，因此本工程是行为等价的重新工程化，不是作者未发布源码的恢复。
 
-- `origin/`：不可变的原始发布物和重构前语言包。
+- `origin/`：按页面拆分的不可变原始发布物和重构前语言包。
 - `src/data/`：由原 `window.X4_*` 全局数据转换出的类型化 ES 模块。
 - `src/domain/`：无 DOM 依赖的坐标、图结构、路线、距离、视图和校验算法。
 - `src/map/createMap.ts`：保持原 SVG 渲染行为的迁移适配层，从模块数据和翻译函数获取输入。
 - `src/map/MapShell.tsx`：React 管理的地图 DOM 契约和本地化控制区。
-- `src/ui/App.tsx`：完整页面、语言切换、资料内容和 SEO 状态。
+- `src/ui/App.tsx`：多页面站点壳、语言切换、地图主页和 SEO 状态。
+- `src/ui/FreeShipsPage.tsx`：免费舰船指南、图片灯箱、锚点和地图深链。
 
 `createMap.ts` 为降低一次性重写 1200 行 SVG 运行时造成的行为回归，暂时保留原控制流并设置 `@ts-nocheck`。它不再依赖 `window.X4_*`；稳定数据结构和核心算法已经迁出并受到 TypeScript 与单元测试约束。后续若继续声明式改写 SVG，应以现有 E2E 契约为迁移门禁，而不是直接删除适配层。
 
@@ -32,6 +33,7 @@
 - `vv_x4_found` 与 `vv_x4_tl_found` 保留，已有浏览器发现记录无需迁移。
 - `window.X4Map` 保留 `selectSector`、`fit`、`setStyle`、`setLens`、`setKhaak`、`setTerraform`、`planRoute`、`route`，并新增 `panBy`。
 - 语言优先级为 URL `lang`、`x4_map_locale` 本地存储、简体中文默认值。
+- `/` 为地图主页，`/free-ships/` 为免费舰船指南；两页共用语言状态和舰船数据。
 - 高频拖拽和键盘平移直接更新 SVG transform；坐标提交由 `requestAnimationFrame` 合并。
 
 ## 验证门禁

@@ -1,6 +1,6 @@
 # X4 Foundations Interactive Map
 
-本仓库将 Veanturverse 发布的 X4 v9.0 交互式宇宙地图重构为可开发、可测试、可本地化的 Vite + React + TypeScript 前端工程。
+本仓库将 Veanturverse 发布的 X4 v9.0 交互式宇宙地图与免费舰船指南重构为可开发、可测试、可本地化的 Vite + React + TypeScript 前端工程。地图是根主页，完整舰船图文指南位于 `/free-ships/`。
 
 原站发布物完整保存在 [`origin/`](./origin/README.md)，新应用不会在运行时加载其中的全局脚本。原站内容、图片和品牌素材的再发布授权未在仓库中确认，对外部署前需自行核对许可范围。
 
@@ -36,6 +36,7 @@ npm run verify         # 全量验证
 - 中英文界面、双语搜索、阵营及空间站筛选。
 - 废弃舰船、时间线舰船、Kha'ak 安全区与地球化星区图层。
 - 资源和空间站信息、路线规划、URL 深链和本地发现状态。
+- 独立的免费舰船指南，包含排行、认领步骤、舰船与位置截图，并可与地图双向跳转。
 - 兼容原 `/guides/x4-universe-map.html` 地址及 `ship`、`tlship`、`sector`、`from`、`to` 参数。
 
 更详细的实现边界和原逻辑映射见 [`docs/architecture.md`](./docs/architecture.md)。

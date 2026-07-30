@@ -1,13 +1,19 @@
-# 原始导出物归档
+# Veanturverse X4 页面原始归档
 
-本目录保存前端工程重构前的完整文件快照，来源为：
+本目录按页面保存 3 份相互独立的原始网页快照：
 
-- 页面：<https://veanturverse.com/guides/x4-universe-map.html>
-- 基线提交：`ac5a6c97e0da96a958b8b55997df9ac5a1cb47ca`
-- 归档日期：2026-07-28（Asia/Shanghai）
+| 目录 | 来源页面 | 本地入口 |
+| --- | --- | --- |
+| `x4-foundations/` | <https://veanturverse.com/x4-foundations.html> | `x4-foundations/x4-foundations.html` |
+| `x4-derelict-ships/` | <https://veanturverse.com/guides/x4-derelict-ships.html> | `x4-derelict-ships/guides/x4-derelict-ships.html` |
+| `x4-universe-map/` | <https://veanturverse.com/guides/x4-universe-map.html> | `x4-universe-map/guides/x4-universe-map.html` |
 
-其中 `guides/`、`assets/` 与 `fonts.css` 是网页导出物；`locales/` 是本仓库在重构前已经补充的中英文语言包；`README.export.md` 是原静态项目说明。
+每个目录保留原始 HTML 的路径结构及其直接依赖的 CSS、JavaScript 和图片，便于独立追溯与行为对照。HTML 中的站内导航链接保持源站原貌，没有改写为归档目录之间的链接。
 
-`SHA256SUMS` 记录归档时各文件的 SHA-256。该目录仅用于追溯和行为对照，新前端运行时不得直接加载其中的脚本。
+建议在本目录启动本地 HTTP 服务：
 
-原站内容、图片及品牌素材的再发布授权未在本仓库中确认。对外部署修改版本前，应由发布者自行确认许可范围并保留来源说明。
+```bash
+python3 -m http.server 8000
+```
+
+然后通过上表中的本地入口访问。原站内容、图片及品牌素材的再发布授权未在本仓库中确认；对外部署前应由发布者确认许可范围并保留来源说明。

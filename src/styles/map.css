@@ -107,7 +107,7 @@
   /* search (within top-left row, right side) */
   .searchwrap { position:relative; z-index:12; }
   /* station finder (filter sectors by fixed-station type) */
-  #stationFinder { position:absolute; top:62px; left:0; width:236px; max-width:60vw; padding:9px 10px; }
+  #stationFinder { position:absolute; top:62px; left:0; width:268px; max-width:calc(100vw - 28px); padding:9px 10px; }
   .sf-h { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:#8298b2; margin-bottom:7px; display:flex; justify-content:space-between; align-items:center; }
   .sf-clear { color:#22d3ee; cursor:pointer; font-size:8.5px; letter-spacing:.1em; visibility:hidden; }
   .sf-clear.show { visibility:visible; }

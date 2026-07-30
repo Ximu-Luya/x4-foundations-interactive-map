@@ -28,17 +28,72 @@ test('Tailwind v4 自定义主题通过 Vite 插件生效', async ({ page }) => 
   await expect(app).toHaveCSS('color', 'rgb(241, 245, 249)')
   await expect(page.locator('.text-cyan').first()).toHaveCSS('color', 'rgb(6, 182, 212)')
   await expect(page.locator('.font-display').first()).toHaveCSS('font-family', /Orbitron/)
+
+  const stationFinder = page.locator('#stationFinder')
+  await expect(stationFinder).toHaveCSS('width', '268px')
+  const stationFinderOverflow = await stationFinder.evaluate(
+    (element) => element.scrollWidth > element.clientWidth,
+  )
+  expect(stationFinderOverflow).toBe(false)
 })
 
-test('路线深链、键盘平移和输入隔离保持有效', async ({ page }) => {
+test('滚轮缩放平滑过渡', async ({ page }) => {
+  await page.goto('/?lang=zh-CN')
+  await page.waitForTimeout(100)
+
+  const { before, samples } = await page.evaluate(async () => {
+    const svg = document.querySelector<SVGSVGElement>('#mapSvg')!
+    const viewport = document.querySelector<SVGGElement>('#gViewport')!
+    const before = viewport.getAttribute('transform') ?? ''
+    const samples: string[] = []
+    const observer = new MutationObserver(() => {
+      samples.push(viewport.getAttribute('transform') ?? '')
+    })
+    observer.observe(viewport, { attributes: true, attributeFilter: ['transform'] })
+
+    const rect = svg.getBoundingClientRect()
+    svg.dispatchEvent(new WheelEvent('wheel', {
+      bubbles: true,
+      cancelable: true,
+      clientX: rect.left + rect.width / 2,
+      clientY: rect.top + rect.height / 2,
+      deltaY: -100,
+    }))
+    await new Promise((resolve) => setTimeout(resolve, 600))
+    observer.disconnect()
+    return { before, samples }
+  })
+
+  expect(new Set(samples).size).toBeGreaterThan(2)
+  const after = samples.at(-1) ?? ''
+
+  const [, beforeScale = '0'] = before?.match(/scale\(([^)]+)\)/) ?? []
+  const [, afterScale = '0'] = after?.match(/scale\(([^)]+)\)/) ?? []
+  expect(Number(afterScale)).toBeGreaterThan(Number(beforeScale))
+})
+
+test('路线深链、键盘平滑移动和输入隔离保持有效', async ({ page }) => {
   await page.goto('/?lang=zh-CN&from=Argon%20Prime&to=Earth')
   await expect(page.locator('#mapPanel .pnl-name')).toHaveText('地球')
   await expect(page.locator('#mapPanel .pnl-route-jumps')).toContainText('8 次跳跃')
 
   const viewport = page.locator('#gViewport')
   const before = await viewport.getAttribute('transform')
-  await page.locator('#mapRoot').press('ArrowRight')
+  await page.locator('#mapRoot').focus()
+  await page.keyboard.down('w')
   await expect.poll(() => viewport.getAttribute('transform')).not.toBe(before)
+  const during = await viewport.getAttribute('transform')
+  await expect.poll(() => viewport.getAttribute('transform')).not.toBe(during)
+  await page.keyboard.up('w')
+
+  await page.waitForTimeout(50)
+  const afterRelease = await viewport.getAttribute('transform')
+  await page.waitForTimeout(80)
+  await expect(viewport).toHaveAttribute('transform', afterRelease!)
+
+  const [, beforeY = '0'] = before?.match(/translate\([^ ]+ ([^)]+)\)/) ?? []
+  const [, afterY = '0'] = afterRelease?.match(/translate\([^ ]+ ([^)]+)\)/) ?? []
+  expect(Number(afterY)).toBeGreaterThan(Number(beforeY))
 
   const search = page.getByPlaceholder('搜索星区...')
   await search.fill('w')
@@ -68,4 +123,61 @@ test('英文界面和旧页面地址保持兼容', async ({ page }) => {
   await page.goto('/guides/x4-universe-map.html?lang=zh-CN&sector=Earth')
   await page.waitForURL(/\?lang=zh-CN&sector=Earth$/)
   await expect(page.locator('#mapPanel .pnl-name')).toHaveText('地球')
+})
+
+test('免费舰船指南支持锚点、图片灯箱和响应式布局', async ({ page }) => {
+  const errors: string[] = []
+  page.on('console', (message) => {
+    if (message.type() === 'error') errors.push(message.text())
+  })
+
+  await page.goto('/free-ships/?lang=zh-CN#ship-odysseus-vanguard')
+  await expect(page.getByRole('heading', { name: 'X4 废弃及无主舰船与位置', level: 1 })).toBeVisible()
+  await expect(page.locator('article[id^="ship-"]')).toHaveCount(15)
+
+  const target = page.locator('#ship-odysseus-vanguard')
+  await expect(target).toBeInViewport()
+  await expect(target.locator('img')).toHaveCount(2)
+  await expect
+    .poll(() =>
+      target
+        .locator('img')
+        .first()
+        .evaluate((image) => (image as HTMLImageElement).naturalWidth),
+    )
+    .toBeGreaterThan(0)
+
+  await target.locator('button').first().click()
+  await expect(page.getByRole('dialog', { name: '舰船图片' })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog')).toBeHidden()
+
+  await expect(page.locator('a[href*="veanturverse.com/guides/x4-derelict-ships"]')).toHaveCount(0)
+  await expect(page.locator('#ship-sapporo').getByRole('link', { name: /在地图上显示/ })).toHaveAttribute(
+    'href',
+    '../?lang=zh-CN&tlship=sapporo',
+  )
+  const hasHorizontalOverflow = await page.evaluate(
+    () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+  )
+  expect(hasHorizontalOverflow).toBe(false)
+  expect(errors).toEqual([])
+})
+
+test('地图和免费舰船指南可以保持语言双向跳转', async ({ page }) => {
+  await page.goto('/?lang=zh-CN&ship=odysseus-vanguard')
+  await expect(page.locator('#mapPanel .pnl-ship-name')).toHaveText('奥德修斯先锋型')
+
+  await page.locator('#mapPanel .pnl-ship-link').click()
+  await page.waitForURL(/\/free-ships\/\?lang=zh-CN#ship-odysseus-vanguard$/)
+  await expect(page.locator('#ship-odysseus-vanguard')).toBeInViewport()
+
+  await page.locator('#ship-odysseus-vanguard').getByRole('link', { name: /在地图上显示/ }).click()
+  await page.waitForURL(/\?lang=zh-CN&ship=odysseus-vanguard$/)
+  await expect(page.locator('#mapPanel .pnl-ship-name')).toHaveText('奥德修斯先锋型')
+
+  await page.goto('/free-ships/?lang=en-US')
+  await expect(
+    page.getByRole('heading', { name: 'X4 Abandoned & Derelict Ships and Locations', level: 1 }),
+  ).toBeVisible()
 })

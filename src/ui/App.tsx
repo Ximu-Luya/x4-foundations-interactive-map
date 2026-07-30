@@ -4,37 +4,83 @@ import { useTranslation } from 'react-i18next'
 import { derelictShips, timelineShips, universeData } from '../data'
 import { localeMetadata, normalizeLocale, supportedLocales, switchLocale } from '../i18n'
 import { MapShell } from '../map/MapShell'
+import { FreeShipsPage } from './FreeShipsPage'
 
 const upstream = 'https://veanturverse.com'
 
-function Header() {
+type SitePage = 'map' | 'free-ships'
+
+function currentPage(): SitePage {
+  return /\/free-ships\/(?:index\.html)?$/.test(window.location.pathname)
+    ? 'free-ships'
+    : 'map'
+}
+
+function localPageHref(page: SitePage, locale: string, fromPage: SitePage) {
+  const search = new URLSearchParams({ lang: locale }).toString()
+  if (page === 'map') return `${fromPage === 'free-ships' ? '../' : './'}?${search}`
+  return `${fromPage === 'free-ships' ? './' : './free-ships/'}?${search}`
+}
+
+function guideHref(slug: string, locale: string) {
+  return `./free-ships/?lang=${encodeURIComponent(locale)}#ship-${slug}`
+}
+
+function ProjectName({ responsive = false }: { responsive?: boolean }) {
+  const { t } = useTranslation()
+  if (responsive) {
+    return (
+      <>
+        <span className="sm:hidden">{t('site.project_name_short')}</span>
+        <span className="hidden sm:inline">{t('site.project_name')}</span>
+      </>
+    )
+  }
+  return <>{t('site.project_name')}</>
+}
+
+function Header({ page }: { page: SitePage }) {
   const { t, i18n } = useTranslation()
   const [menuOpen, setMenuOpen] = useState(false)
-  const links = [
-    [t('navigation.home'), `${upstream}/index.html`],
-    [t('navigation.whats_new'), `${upstream}/index.html#new`],
-    [t('navigation.x4_foundations'), `${upstream}/x4-foundations.html`],
-    [t('navigation.star_citizen'), `${upstream}/star-citizen.html`],
-    [t('navigation.recruit_bonus'), `${upstream}/Referral.html`],
-  ]
   const activeLocale = normalizeLocale(i18n.resolvedLanguage ?? i18n.language) ?? 'en-US'
+  const links = [
+    {
+      label: t('navigation.universe_map'),
+      href: localPageHref('map', activeLocale, page),
+      active: page === 'map',
+    },
+    {
+      label: t('navigation.free_ships_guide'),
+      href: localPageHref('free-ships', activeLocale, page),
+      active: page === 'free-ships',
+    },
+    { label: t('navigation.original_site'), href: upstream, external: true, active: false },
+  ]
 
   return (
     <header className="sticky top-0 z-40 h-16 border-b border-subtle/80 bg-base/95 backdrop-blur-xl">
       <div className="mx-auto flex h-full max-w-[1280px] items-center justify-between px-5 md:px-8">
-        <a href={upstream} className="font-display text-base font-black tracking-[0.22em]">
-          <span className="text-ink">VEANTUR</span>
-          <span className="text-cyan">VERSE</span>
+        <a
+          href={localPageHref('map', activeLocale, page)}
+          className="whitespace-nowrap font-display text-xs font-black tracking-[0.1em] sm:text-sm sm:tracking-[0.14em] lg:text-base"
+        >
+          <span className="text-ink">
+            <ProjectName responsive />
+          </span>
         </a>
         <nav className="hidden items-center gap-6 font-mono text-[10px] uppercase tracking-[0.18em] text-mute md:flex">
-          {links.map(([label, href]) => (
-            <a key={href} href={href} className="transition-colors hover:text-cyan">
+          {links.map(({ active, external, href, label }) => (
+            <a
+              key={href}
+              href={href}
+              target={external ? '_blank' : undefined}
+              rel={external ? 'noopener noreferrer' : undefined}
+              aria-current={active ? 'page' : undefined}
+              className={`transition-colors hover:text-cyan ${active ? 'text-cyan2' : ''}`}
+            >
               {label}
             </a>
           ))}
-          <a href="https://www.youtube.com/@Veantur" className="hover:text-cyan">
-            {t('navigation.youtube')}
-          </a>
         </nav>
         <div className="flex items-center gap-3">
           <div className="flex border border-line bg-surface p-0.5 font-mono text-[10px]">
@@ -63,8 +109,16 @@ function Header() {
       </div>
       {menuOpen ? (
         <nav className="absolute inset-x-0 top-16 flex flex-col gap-4 border-b border-line bg-base p-6 font-mono text-xs uppercase tracking-widest md:hidden">
-          {links.map(([label, href]) => (
-            <a key={href} href={href} onClick={() => setMenuOpen(false)}>
+          {links.map(({ active, external, href, label }) => (
+            <a
+              key={href}
+              href={href}
+              target={external ? '_blank' : undefined}
+              rel={external ? 'noopener noreferrer' : undefined}
+              aria-current={active ? 'page' : undefined}
+              className={active ? 'text-cyan2' : undefined}
+              onClick={() => setMenuOpen(false)}
+            >
               {label}
             </a>
           ))}
@@ -103,7 +157,8 @@ function AboutContent() {
 }
 
 function ShipSections() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const locale = normalizeLocale(i18n.resolvedLanguage ?? i18n.language) ?? 'en-US'
   const sectorName = (name: string) => t(`sectors.${name}`, { defaultValue: name })
 
   return (
@@ -142,12 +197,15 @@ function ShipSections() {
                     {t(`ships.${key}.find`, { defaultValue: ship.find })}
                   </p>
                   <div className="flex gap-4 font-mono text-[10px] uppercase tracking-[0.16em]">
-                    <a className="text-cyan2 hover:underline" href={`?ship=${ship.slug}`}>
+                    <a
+                      className="text-cyan2 hover:underline"
+                      href={`./?lang=${encodeURIComponent(locale)}&ship=${ship.slug}`}
+                    >
                       {t('content.show_on_map')}
                     </a>
                     <a
                       className="text-mute2 hover:text-cyan"
-                      href={`${upstream}/guides/x4-derelict-ships.html#ship-${ship.slug}`}
+                      href={guideHref(ship.slug, locale)}
                     >
                       {t('content.full_guide')}
                     </a>
@@ -191,12 +249,15 @@ function ShipSections() {
                     {t(`timeline_ships.${key}.find`, { defaultValue: ship.find })}
                   </p>
                   <div className="flex gap-4 font-mono text-[10px] uppercase tracking-[0.16em]">
-                    <a className="text-purple-300 hover:underline" href={`?tlship=${ship.slug}`}>
+                    <a
+                      className="text-purple-300 hover:underline"
+                      href={`./?lang=${encodeURIComponent(locale)}&tlship=${ship.slug}`}
+                    >
                       {t('content.show_on_map')}
                     </a>
                     <a
                       className="text-mute2 hover:text-cyan"
-                      href={`${upstream}/guides/x4-derelict-ships.html#ship-${ship.slug}`}
+                      href={guideHref(ship.slug, locale)}
                     >
                       {t('content.full_guide')}
                     </a>
@@ -246,13 +307,14 @@ function Footer() {
       <div className="mx-auto flex max-w-[1280px] flex-col items-start justify-between gap-6 px-5 md:flex-row md:items-center md:px-8">
         <div>
           <div className="mb-2 font-display text-base font-black tracking-[0.22em]">
-            <span className="text-ink">VEANTUR</span>
-            <span className="text-cyan">VERSE</span>
+            <span className="text-ink">
+              <ProjectName />
+            </span>
           </div>
           <p className="font-mono text-xs tracking-wider text-mute2">{t('content.footer')}</p>
         </div>
         <a className="font-mono text-xs uppercase tracking-widest text-cyan" href={upstream}>
-          Original website ↗
+          {t('navigation.original_site')} ↗
         </a>
       </div>
     </footer>
@@ -261,23 +323,33 @@ function Footer() {
 
 export function App() {
   const { t, i18n } = useTranslation()
+  const page = currentPage()
 
   useEffect(() => {
     document.documentElement.lang =
       normalizeLocale(i18n.resolvedLanguage ?? i18n.language) ?? 'en-US'
-    document.title = t('seo.page_title')
+    const titleKey = page === 'free-ships' ? 'free_ships_page.seo.title' : 'seo.page_title'
+    const descriptionKey =
+      page === 'free-ships' ? 'free_ships_page.seo.description' : 'seo.description'
+    document.title = t(titleKey)
     const description = document.querySelector<HTMLMetaElement>('meta[name="description"]')
-    if (description) description.content = t('seo.description')
-  }, [i18n.language, i18n.resolvedLanguage, t])
+    if (description) description.content = t(descriptionKey)
+  }, [i18n.language, i18n.resolvedLanguage, page, t])
 
   return (
     <div className="min-h-screen bg-base text-ink">
-      <Header />
+      <Header page={page} />
       <main>
-        <MapShell />
-        <AboutContent />
-        <ShipSections />
-        <Faq />
+        {page === 'free-ships' ? (
+          <FreeShipsPage />
+        ) : (
+          <>
+            <MapShell />
+            <AboutContent />
+            <ShipSections />
+            <Faq />
+          </>
+        )}
       </main>
       <Footer />
     </div>

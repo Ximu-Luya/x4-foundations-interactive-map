@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>X4: Foundations, Guides · Veanturverse</title>
+<meta name="description" content="X4: Foundations guides from Veantur, abandoned ship locations, economy, station building. No fluff, just what works." />
+<meta property="og:title" content="X4: Foundations Guides" />
+<meta property="og:description" content="Practical X4: Foundations guides, abandoned ship locations, early economy, station building, plus a full interactive universe map. No fluff, just what works." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://veanturverse.com/x4-foundations.html" />
+<meta property="og:image" content="https://veanturverse.com/assets/og-default.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Veanturverse, Star Citizen & X4 guides, tools & honest content" />
+<meta property="og:site_name" content="Veanturverse" />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="X4: Foundations Guides" />
+<meta name="twitter:description" content="Practical X4: Foundations guides, abandoned ship locations, early economy, station building, plus a full interactive universe map. No fluff, just what works." />
+<meta name="twitter:image" content="https://veanturverse.com/assets/og-default.png" />
+<meta name="twitter:image:alt" content="Veanturverse, Star Citizen & X4 guides, tools & honest content" />
+<meta name="theme-color" content="#0a0e1a" />
+<link rel="canonical" href="https://veanturverse.com/x4-foundations.html" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "X4: Foundations Guides",
+  "url": "https://veanturverse.com/x4-foundations.html",
+  "description": "Practical X4: Foundations guides, abandoned ship locations, early economy, station building, plus a full interactive universe map. No fluff, just what works.",
+  "inLanguage": "en",
+  "about": {
+    "@type": "VideoGame",
+    "name": "X4: Foundations"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://veanturverse.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "X4: Foundations",
+      "item": "https://veanturverse.com/x4-foundations.html"
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="fonts.css" />
+<!-- Tailwind: prebuilt, purged & minified, replaces the runtime CDN -->
+<link rel="stylesheet" href="assets/tailwind.css" />
+<style>
+  html, body { background:#0a0e1a; color:#f1f5f9; }
+  body { font-family:'Rajdhani',ui-sans-serif,system-ui; -webkit-font-smoothing:antialiased; }
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(34,211,238,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34,211,238,0.04) 1px, transparent 1px);
+    background-size:72px 72px;
+    -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 30%, #000 30%, transparent 80%);
+            mask-image:radial-gradient(ellipse 90% 70% at 50% 30%, #000 30%, transparent 80%);
+  }
+  .aurora::before, .aurora::after {
+    content:""; position:absolute; inset:-10%;
+    background:
+      radial-gradient(ellipse 35% 25% at 25% 35%, rgba(6,182,212,0.28), transparent 60%),
+      radial-gradient(ellipse 30% 22% at 78% 60%, rgba(249,115,22,0.16), transparent 60%),
+      radial-gradient(ellipse 30% 30% at 50% 80%, rgba(34,211,238,0.12), transparent 60%);
+    filter:blur(40px); animation:pulse-slow 7s ease-in-out infinite; pointer-events:none;
+  }
+  .aurora::after { animation-delay:-3.5s; transform:scale(1.05); opacity:0.6; }
+  .glow-cyan { text-shadow:0 0 16px rgba(34,211,238,0.45), 0 0 48px rgba(6,182,212,0.22); }
+  .corner { position:absolute; width:12px; height:12px; border:1px solid currentColor; opacity:0.55; }
+  .corner.tl { top:8px; left:8px; border-right:0; border-bottom:0; }
+  .corner.tr { top:8px; right:8px; border-left:0; border-bottom:0; }
+  .corner.bl { bottom:8px; left:8px; border-right:0; border-top:0; }
+  .corner.br { bottom:8px; right:8px; border-left:0; border-top:0; }
+  .card { transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+  .card:hover { transform:translateY(-3px); border-color:rgba(34,211,238,0.55); box-shadow:0 18px 50px rgba(0,0,0,0.45), 0 0 28px rgba(6,182,212,0.12); }
+  .btn-press { transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+  .btn-press:hover { transform:translateY(-1px); }
+  .mobile-menu { transform:translateX(100%); transition:transform .25s ease; }
+  .mobile-menu.open { transform:translateX(0); }
+  :focus-visible { outline:2px solid #22d3ee; outline-offset:3px; border-radius:4px; }
+  /* striped image placeholder */
+  .ph {
+    background:
+      repeating-linear-gradient(135deg, rgba(34,211,238,0.06) 0 12px, transparent 12px 24px),
+      linear-gradient(180deg, #0d1422, #0a0e1a);
+  }
+</style>
+</head>
+
+<body class="font-ui min-h-screen relative">
+
+<div class="bg-grid fixed inset-0 -z-10 pointer-events-none"></div>
+
+<!-- NAV -->
+<header class="sticky top-0 z-40 backdrop-blur-md bg-base/75 border-b border-subtle/80">
+  <div class="max-w-[1280px] mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
+    <a href="index.html" class="font-display font-black tracking-[0.22em] text-base md:text-lg select-none">
+      <span class="text-ink glow-cyan">VEANTUR</span><span class="text-cyan">VERSE</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-[13px] uppercase tracking-[0.18em] text-mute font-ui font-medium">
+      <a href="index.html" class="hover:text-cyan transition-colors">Home</a>
+      <a href="index.html#new" class="hover:text-cyan transition-colors">What's New</a>
+      <a href="x4-foundations.html" class="text-cyan2 hover:text-cyan transition-colors">X4 Foundations</a>
+      <a href="star-citizen.html" class="hover:text-cyan transition-colors">Star Citizen</a>
+      <a href="Referral.html" class="hover:text-cyan transition-colors">Recruit Bonus</a>
+      <a href="https://www.youtube.com/@Veantur" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 hover:text-cyan transition-colors">
+        YouTube
+        <svg class="w-3 h-3 opacity-70" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3h8v8" stroke="currentColor" stroke-width="1.5"/><path d="M13 3 4 12" stroke="currentColor" stroke-width="1.5"/></svg>
+      </a>
+    </nav>
+    <button id="navOpen" class="md:hidden p-2 -mr-2 text-ink" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div id="mobileMenu" class="mobile-menu md:hidden fixed inset-y-0 right-0 w-72 bg-base/95 backdrop-blur-xl border-l border-subtle z-50 shadow-2xl">
+    <div class="flex items-center justify-between px-5 h-16 border-b border-subtle">
+      <span class="font-display font-black tracking-[0.22em] text-sm">VEANTUR<span class="text-cyan">VERSE</span></span>
+      <button id="navClose" class="p-2 text-ink" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <nav class="px-5 py-6 flex flex-col gap-5 text-base uppercase tracking-[0.16em] text-mute">
+      <a href="index.html" class="hover:text-cyan transition-colors">Home</a>
+      <a href="index.html#new" class="hover:text-cyan transition-colors">What's New</a>
+      <a href="x4-foundations.html" class="text-cyan2 hover:text-cyan transition-colors">X4 Foundations</a>
+      <a href="star-citizen.html" class="hover:text-cyan transition-colors">Star Citizen</a>
+      <a href="Referral.html" class="hover:text-cyan transition-colors">Recruit Bonus</a>
+      <a href="https://www.youtube.com/@Veantur" target="_blank" rel="noopener noreferrer" class="hover:text-cyan transition-colors">YouTube</a>
+    </nav>
+  </div>
+  <div id="navBackdrop" class="mobile-menu fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section class="relative aurora overflow-hidden border-b border-subtle/60">
+  <div class="relative max-w-[1280px] mx-auto px-5 md:px-8 py-24 md:py-28">
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 border border-cyan/40 bg-cyan/[0.06] text-cyan font-mono text-[11px] tracking-[0.22em] uppercase mb-7 animate-float-up">
+      <span class="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse"></span>
+      Game · Sandbox Sim
+    </div>
+    <h1 class="font-display font-black uppercase leading-[0.95] tracking-[0.02em] text-[clamp(40px,8vw,104px)] animate-float-up [animation-delay:80ms]">
+      X4: <span class="text-cyan glow-cyan">Foundations</span>
+    </h1>
+    <p class="mt-6 max-w-2xl text-mute text-lg md:text-xl leading-relaxed animate-float-up [animation-delay:160ms]">
+      The deep-end space sandbox. These guides cut straight to the things that actually move the needle, 
+      free ships, early economy, station logistics. No 40-minute intros.
+    </p>
+  </div>
+</section>
+
+<!-- GUIDES -->
+<section id="guides" class="relative py-20 md:py-24">
+  <div class="max-w-[1280px] mx-auto px-5 md:px-8">
+    <div class="mb-12 max-w-2xl">
+      <div class="font-mono text-[11px] text-cyan tracking-[0.24em] uppercase mb-2 flex items-center gap-2">
+        <span class="w-6 h-px bg-cyan inline-block"></span> Guides
+      </div>
+      <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight">Where to start</h2>
+      <p class="text-mute mt-3 text-lg">Short, practical, current. Pick one and go.</p>
+    </div>
+
+    <!-- Guide 1, Derelict ships (live) · single feature card -->
+    <div class="flex flex-col gap-6">
+    <a href="guides/x4-derelict-ships.html" class="card relative bg-surface border border-line overflow-hidden group grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+      <span class="corner tl text-cyan z-10"></span><span class="corner tr text-cyan z-10"></span>
+      <span class="corner bl text-cyan z-10"></span><span class="corner br text-cyan z-10"></span>
+      <div class="ph relative aspect-[16/10] md:aspect-auto md:min-h-[280px] border-b md:border-b-0 md:border-r border-line overflow-hidden">
+        <img src="assets/x4/xenon-h-ship.jpg" alt="Free ship in X4: Foundations" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+        <div class="absolute top-3 left-3 font-mono text-[10px] tracking-[0.2em] uppercase text-cyan bg-black/50 border border-cyan/40 px-2 py-1">Guide 01</div>
+      </div>
+      <div class="p-7 md:p-9 flex flex-col gap-4 justify-center">
+        <div class="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] font-mono">
+          <span class="text-cyan">// Free Ships</span>
+          <span class="text-cyan">● Live</span>
+        </div>
+        <h3 class="font-display font-bold text-2xl md:text-3xl leading-tight group-hover:text-cyan transition-colors">
+          Abandoned &amp; Derelict Ships and Locations
+        </h3>
+        <p class="text-mute text-[15px] md:text-[16px] leading-relaxed">
+          Every known spot to grab a free ship, how to claim it, what shape it's in, and which ones are
+          worth the trip. From cheap scouts to full destroyers, just sitting there waiting to be claimed.
+        </p>
+        <div class="pt-1 inline-flex items-center gap-2 text-cyan font-mono text-xs uppercase tracking-[0.2em]">
+          Open guide
+          <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- Guide 2, Interactive universe map (live) -->
+    <a href="guides/x4-universe-map.html" class="card relative bg-surface border border-line overflow-hidden group grid grid-cols-1 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+      <span class="corner tl text-cyan z-10"></span><span class="corner tr text-cyan z-10"></span>
+      <span class="corner bl text-cyan z-10"></span><span class="corner br text-cyan z-10"></span>
+      <div class="p-7 md:p-9 flex flex-col gap-4 justify-center md:order-1 order-2">
+        <div class="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] font-mono">
+          <span class="text-cyan">// Interactive Map</span>
+          <span class="text-cyan">● Live</span>
+        </div>
+        <h3 class="font-display font-bold text-2xl md:text-3xl leading-tight group-hover:text-cyan transition-colors">
+          The Full Universe Map
+        </h3>
+        <p class="text-mute text-[15px] md:text-[16px] leading-relaxed">
+          Every sector across all DLCs on one interactive hex map, coloured by faction, wired up with gate and
+          super-highway links. Pan, zoom, search any system and click through its connections.
+        </p>
+        <div class="pt-1 inline-flex items-center gap-2 text-cyan font-mono text-xs uppercase tracking-[0.2em]">
+          Open map
+          <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="relative aspect-[16/10] md:aspect-auto md:min-h-[280px] border-b md:border-b-0 md:border-l border-line md:order-2 order-1 overflow-hidden bg-base">
+        <img src="assets/x4/universe-map-preview.png" alt="X4: Foundations interactive universe hex map, all sectors coloured by faction" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+        <div class="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-surface/40 pointer-events-none"></div>
+        <div class="absolute top-3 right-3 font-mono text-[10px] tracking-[0.2em] uppercase text-cyan bg-black/50 border border-cyan/40 px-2 py-1">Map</div>
+      </div>
+    </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="relative py-14 border-t border-subtle/60">
+  <div class="max-w-[1280px] mx-auto px-5 md:px-8 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
+    <div>
+      <div class="font-display font-black tracking-[0.22em] text-base mb-2"><span class="text-ink">VEANTUR</span><span class="text-cyan">VERSE</span></div>
+      <p class="text-mute2 text-xs font-mono tracking-wider">© 2026 Veantur · Star Citizen &amp; X4 guides</p>
+    </div>
+    <nav class="flex flex-wrap gap-3 text-xs text-mute2 font-mono uppercase tracking-[0.2em]">
+      <a href="index.html" class="hover:text-cyan">Home</a><span>·</span>
+      <a href="impressum.html" class="hover:text-cyan">Impressum</a><span>·</span>
+      <a href="privacy.html" class="hover:text-cyan">Datenschutz</a><span>·</span>
+      <a href="disclosure.html" class="hover:text-cyan">Disclosure</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  const menu=document.getElementById('mobileMenu'),backdrop=document.getElementById('navBackdrop');
+  function setMenu(o){menu.classList.toggle('open',o);backdrop.classList.toggle('hidden',!o);document.body.style.overflow=o?'hidden':'';}
+  document.getElementById('navOpen')?.addEventListener('click',()=>setMenu(true));
+  document.getElementById('navClose')?.addEventListener('click',()=>setMenu(false));
+  backdrop?.addEventListener('click',()=>setMenu(false));
+  menu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+</script>
+
+</body>
+</html>

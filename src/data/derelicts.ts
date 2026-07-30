@@ -9,7 +9,7 @@ import type { DerelictShip } from './types'
    edge gate offsets), eyeballed from the in-game sector screenshots so the pin
    shows the rough direction to the wreck. +x = right, +y = down (so up / +z is
    negative y). Direction is read from the screenshots; distance is approximate.
-   Guide anchor: x4-derelict-ships.html#ship-<slug> */
+   Guide anchor: /free-ships/#ship-<slug> */
 export const derelictShips: DerelictShip[] = [
   {
     slug: 'elite-vanguard', name: 'Elite Vanguard', cls: 'S', role: 'Interceptor',
