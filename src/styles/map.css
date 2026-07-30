@@ -29,12 +29,14 @@
     paint-order:stroke; stroke:#05070d; stroke-width:calc(3px / var(--z,1)); opacity:0; transition:opacity .15s ease; pointer-events:none; letter-spacing:.01em; }
   .label.show { opacity:.92; }
   .label.match { fill:#cfeeff; opacity:1 !important; }
-  .label.dim { opacity:.12 !important; }
+  .label.show.dim { opacity:.12 !important; }
+  .label.show.filter-dim { opacity:.12 !important; }
   .clabel { fill:var(--fc); font-family:'Orbitron',sans-serif; font-weight:700; text-transform:uppercase;
     font-size:calc(var(--clpx,9px) / var(--z,1)); letter-spacing:calc(0.4px / var(--z,1)); text-anchor:middle;
     paint-order:stroke; stroke:#05070d; stroke-width:calc(2.6px / var(--z,1)); opacity:0; transition:opacity .15s ease; pointer-events:none; }
   .clabel.show { opacity:.95; }
-  .clabel.dim { opacity:.1 !important; }
+  .clabel.show.dim { opacity:.1 !important; }
+  .clabel.show.filter-dim { opacity:.1 !important; }
 
   .edge { fill:none; stroke-linecap:round; }
   .edge-gate { stroke:rgba(190,212,240,0.22); stroke-width:1; }
@@ -43,6 +45,7 @@
   @keyframes shflow { to { stroke-dashoffset:-24; } }
   .edge.hot  { stroke:rgba(34,211,238,0.95); stroke-width:2; stroke-dasharray:none; }
   .edge.dim  { opacity:.18; }
+  .edge.filter-dim { opacity:.18; }
 
   /* in-sector local highways (hand-traced, drawn as solid double lanes) */
   .hw-local { fill:none; stroke:rgba(150,195,235,0.7); stroke-width:1.1; vector-effect:non-scaling-stroke; pointer-events:none; }
@@ -52,15 +55,19 @@
   .hex.sel   { fill:color-mix(in srgb, var(--fc) 34%, transparent); stroke-width:2.6; filter:drop-shadow(0 0 6px var(--fc)); }
   .hex.adj   { stroke-width:2; }
   .hex.dim   { opacity:.16; }
+  .hex.filter-dim { opacity:.16; }
 
   .node { fill:var(--fc); stroke:#05070d; stroke-width:1.2; opacity:.96; transition:opacity .15s, r .12s; display:none; }
   .node.hover { stroke:#fff; }
   .node.sel   { stroke:#fff; stroke-width:1.6; }
   .node.dim   { opacity:.14; }
+  .node.filter-dim { opacity:.14; }
 
   /* jump-gate dots, sit at each connection's real in-sector gate position */
   .gate-dot { fill:rgba(198,216,240,0.55); pointer-events:none; }
   .gate-dot.hw { fill:rgba(110,185,255,0.75); }
+  .gate-dot, .hw-local, .stn-one, .stn-all { transition:opacity .15s ease; }
+  .gate-dot.filter-dim, .hw-local.filter-dim, .stn-one.filter-dim, .stn-all.filter-dim { opacity:.18; }
   #mapRoot[data-style="territory"] .gate-dot { fill:rgba(198,216,240,0.26); }
 
   /* station icons near a hex's lower edge (fixed NPC anchor stations) */

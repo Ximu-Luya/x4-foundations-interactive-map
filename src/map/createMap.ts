@@ -62,6 +62,7 @@ export function createMap(options = {}) {
   const gHex = document.getElementById('gHex');
   const gNode = document.getElementById('gNode');
   const gLabel = document.getElementById('gLabel');
+  const sectorDecorEls = sectors.map(() => []);
 
   // ---- build elements ----
   function hexPath(s) {
@@ -109,12 +110,13 @@ export function createMap(options = {}) {
   // gate dots: a small marker at every real jump-gate position
   U.edges.forEach(e => {
     const a = sectors[e.a], b = sectors[e.b];
-    [[gateLocal(a, e.ga), e.type], [gateLocal(b, e.gb), e.type]].forEach(([p, t]) => {
+    [[gateLocal(a, e.ga), e.type, e.a], [gateLocal(b, e.gb), e.type, e.b]].forEach(([p, t, sid]) => {
       const d = document.createElementNS(SVGNS, 'circle');
       d.setAttribute('cx', p[0].toFixed(1)); d.setAttribute('cy', p[1].toFixed(1));
       d.setAttribute('r', t === 'hw' ? '2.1' : '2.7');
       d.setAttribute('class', 'gate-dot' + (t === 'hw' ? ' hw' : ''));
       gEdges.appendChild(d);
+      sectorDecorEls[sid].push(d);
     });
   });
 
@@ -173,6 +175,7 @@ export function createMap(options = {}) {
         path.setAttribute('d', lanePath(lane));
         path.setAttribute('class', 'hw-local');
         gHw.appendChild(path);
+        sectorDecorEls[sid].push(path);
       });
     });
   }
@@ -208,7 +211,7 @@ export function createMap(options = {}) {
   gStations.setAttribute('id', 'gStations');
   gView.appendChild(gStations);
   const STN_POS = stationPositions;
-  sectors.forEach((s) => {
+  sectors.forEach((s, sid) => {
     const codes = STN_DATA[s.key];
     if (!codes || !codes.length) return;
     const w1 = Math.max(9, s.lr * 0.34), w = Math.max(7, s.lr * 0.27);
@@ -221,10 +224,12 @@ export function createMap(options = {}) {
       const gOne = document.createElementNS(SVGNS, 'g'); gOne.setAttribute('class', 'stn-one');
       gOne.appendChild(makeIcon(prim[0], (STN_TYPES[prim[0]] || {}).color || '#8aa', s.lx + prim[1] * K, s.ly + prim[2] * K, w1));
       gStations.appendChild(gOne);
+      sectorDecorEls[sid].push(gOne);
       // every station at its real position (close zoom)
       const gAll = document.createElementNS(SVGNS, 'g'); gAll.setAttribute('class', 'stn-all');
       pos.forEach(([code, dx, dy]) => gAll.appendChild(makeIcon(code, (STN_TYPES[code] || {}).color || '#8aa', s.lx + dx * K, s.ly + dy * K, w)));
       gStations.appendChild(gAll);
+      sectorDecorEls[sid].push(gAll);
       return;
     }
 
@@ -234,10 +239,12 @@ export function createMap(options = {}) {
     const gOne = document.createElementNS(SVGNS, 'g'); gOne.setAttribute('class', 'stn-one');
     gOne.appendChild(makeIcon(prim, (STN_TYPES[prim] || {}).color || '#8aa', s.lx, cy, w1));
     gStations.appendChild(gOne);
+    sectorDecorEls[sid].push(gOne);
     const gAll = document.createElementNS(SVGNS, 'g'); gAll.setAttribute('class', 'stn-all');
     const gap = w * 0.26, rowW = codes.length * w + (codes.length - 1) * gap, x0 = s.lx - rowW / 2 + w / 2;
     codes.forEach((code, k) => gAll.appendChild(makeIcon(code, (STN_TYPES[code] || {}).color || '#8aa', x0 + k * (w + gap), cy, w)));
     gStations.appendChild(gAll);
+    sectorDecorEls[sid].push(gAll);
   });
 
   // cluster labels (own layer, shown when zoomed out)
@@ -254,6 +261,9 @@ export function createMap(options = {}) {
     gCluster.appendChild(t);
     return t;
   });
+  const clusterSectorIds = (U.clusters || []).map(c => sectors
+    .map((s, i) => (s.key === c.name || s.key.startsWith(c.name + ' ') ? i : -1))
+    .filter(i => i >= 0));
 
   // transparent hit targets (on top) so clicks/hover always register
   const hitEls = sectors.map((s, i) => {
@@ -312,9 +322,31 @@ export function createMap(options = {}) {
     if (lensBtn) { lensBtn.classList.toggle('active', lensShips); lensBtn.setAttribute('aria-pressed', lensShips ? 'true' : 'false'); }
     updatePins();
   }
+  function disableShipLens() {
+    if (!lensShips && !lensTimeline) return;
+    lensShips = false;
+    lensTimeline = false;
+    refreshLenses();
+  }
   // ONE toggle reveals BOTH overlays: derelict ships + timeline-reward ships
   // (both checklists stacked in #shipsPanels, both pin colours on the map at once)
-  function setLens(on) { lensShips = on; lensTimeline = on; refreshLenses(); }
+  function setLens(on) {
+    lensShips = on;
+    lensTimeline = on;
+    if (on) {
+      khaakMode = false;
+      terraformMode = false;
+      root.classList.remove('khaak-on', 'terra-on');
+      if (khaakBtn) { khaakBtn.classList.remove('active'); khaakBtn.setAttribute('aria-pressed', 'false'); }
+      if (terraBtn) { terraBtn.classList.remove('active'); terraBtn.setAttribute('aria-pressed', 'false'); }
+      factionFilter = null;
+      stationFilter.clear();
+      stationFilterUpdate();
+      document.querySelectorAll('.leg').forEach(x => x.classList.remove('active'));
+    }
+    refreshLenses();
+    refreshEmphasis();
+  }
   function setTimelineLens(on) { setLens(on); } // kept for the ?tlship= deep link
   if (lensBtn) lensBtn.onclick = () => setLens(!lensShips);
 
@@ -491,7 +523,7 @@ export function createMap(options = {}) {
   if (khaakNote && khaakHives.length) khaakNote.textContent = tr('runtime.khaak_note', "Kha'ak-safe sectors, {safeCount} sectors lie more than 3 jumps from any of the {hiveCount} Kha'ak hive sectors.", { safeCount: khaakSafeCount, hiveCount: khaakHives.length });
   function setKhaak(on) {
     khaakMode = on;
-    if (on) { terraformMode = false; root.classList.remove('terra-on'); if (terraBtn) { terraBtn.classList.remove('active'); terraBtn.setAttribute('aria-pressed', 'false'); } factionFilter = null; stationFilter.clear(); stationFilterUpdate(); document.querySelectorAll('.leg').forEach(x => x.classList.remove('active')); }
+    if (on) { disableShipLens(); terraformMode = false; root.classList.remove('terra-on'); if (terraBtn) { terraBtn.classList.remove('active'); terraBtn.setAttribute('aria-pressed', 'false'); } factionFilter = null; stationFilter.clear(); stationFilterUpdate(); document.querySelectorAll('.leg').forEach(x => x.classList.remove('active')); }
     root.classList.toggle('khaak-on', on);
     if (khaakBtn) { khaakBtn.classList.toggle('active', on); khaakBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); }
     refreshEmphasis();
@@ -508,6 +540,7 @@ export function createMap(options = {}) {
   function setTerraform(on) {
     terraformMode = on;
     if (on) {
+      disableShipLens();
       khaakMode = false; root.classList.remove('khaak-on');
       if (khaakBtn) { khaakBtn.classList.remove('active'); khaakBtn.setAttribute('aria-pressed', 'false'); }
       factionFilter = null; stationFilter.clear(); stationFilterUpdate(); document.querySelectorAll('.leg').forEach(x => x.classList.remove('active'));
@@ -638,7 +671,7 @@ export function createMap(options = {}) {
     const rset = routePath ? new Set(routePath) : null;
     if (stationFilter.size) {
       // station filter active: show ONLY the names of matching sectors (any zoom)
-      clusterEls.forEach(t => t.classList.remove('show'));
+      clusterEls.forEach(t => { t.classList.remove('show'); t.classList.remove('filter-dim'); });
       labelEls.forEach((l, i) => {
         const m = (STN_DATA[sectors[i].key] || []).some(c => stationFilter.has(c));
         l.classList.toggle('show', m);
@@ -648,7 +681,7 @@ export function createMap(options = {}) {
     }
     labelEls.forEach(l => l.classList.remove('match'));
     if (showSectors) {
-      clusterEls.forEach(t => t.classList.remove('show'));
+      clusterEls.forEach(t => { t.classList.remove('show'); t.classList.remove('filter-dim'); });
       const items = sectors.map((s, i) => ({
         el: labelEls[i], sx: s.lx * scale + tx, sy: (s.ly - s.lr * 0.58) * scale + ty,
         w: estW(s.name, 6.2), h: 14,
@@ -663,8 +696,10 @@ export function createMap(options = {}) {
       });
       const items = clusterEls.map((el, i) => {
         const c = U.clusters[i];
-        const dim = factionFilter && c.f !== factionFilter;
-        el.classList.toggle('dim', !!dim);
+        const memberIds = clusterSectorIds[i];
+        const dim = filterActive && memberIds.length > 0 && memberIds.every(id => sectorFilterDim[id]);
+        el.classList.remove('dim');
+        el.classList.toggle('filter-dim', dim);
         return { el, sx: (c.x - minx) * K * scale + tx, sy: (c.y - miny) * K * scale + ty,
           w: estW(c.name, clpx * 0.74), h: clpx + 4, force: false, pr: c.n * 100 + (c.f !== 'UNO' ? 10 : 0) - c.name.length * 0.1 };
       }).sort((a, b) => b.pr - a.pr);
@@ -716,6 +751,8 @@ export function createMap(options = {}) {
   let selected = null, hovered = null, factionFilter = null;
   let stationFilter = new Set();
   let stationFilterUpdate = () => {};
+  let filterActive = false;
+  let sectorFilterDim = sectors.map(() => false);
   // ---- routing state ----
   let routeMode = false, routeStart = null, routeDest = null, routePath = null;
 
@@ -795,6 +832,8 @@ export function createMap(options = {}) {
   function refreshEmphasis() {
     const nb = selected != null ? new Set(neighbours[selected].map(n => n.id)) : null;
     const rset = routePath ? new Set(routePath) : null;
+    filterActive = !rset && !!(khaakMode || terraformMode || lensShips || factionFilter || stationFilter.size);
+    sectorFilterDim = sectors.map(() => false);
     const redges = new Map(); // key -> fromNode (earlier node along the path)
     if (routePath) for (let i = 0; i + 1 < routePath.length; i++) { const a = routePath[i], b = routePath[i + 1]; redges.set(Math.min(a, b) + '-' + Math.max(a, b), a); }
     sectors.forEach((s, i) => {
@@ -812,7 +851,7 @@ export function createMap(options = {}) {
       } else if (khaakMode) {
         const dst = khaakDist[i], hive = dst === 0, safe = dst > 3;
         sel = i === selected;
-        dim = !safe && !sel;
+        dim = !safe && !hive && !sel;
         hexEls[i].classList.remove('stn-match', 'route', 'route-start', 'route-dest', 'route-danger', 'terra');
         hexEls[i].classList.toggle('khaak-safe', safe);
         hexEls[i].classList.toggle('khaak-hive', hive);
@@ -825,6 +864,12 @@ export function createMap(options = {}) {
         hexEls[i].classList.remove('stn-match', 'route', 'route-start', 'route-dest', 'route-danger', 'khaak-safe', 'khaak-hive', 'khaak-near');
         hexEls[i].classList.toggle('terra', tf);
         nodeEls[i].classList.remove('route-start', 'route-dest');
+      } else if (lensShips) {
+        const hasShip = !!((derelictBySector[i] || []).length || (timelineBySector[i] || []).length);
+        sel = i === selected;
+        dim = !hasShip && !sel;
+        hexEls[i].classList.remove('stn-match', 'route', 'route-start', 'route-dest', 'route-danger', 'khaak-safe', 'khaak-hive', 'khaak-near', 'terra');
+        nodeEls[i].classList.remove('route-start', 'route-dest');
       } else {
         const sfActive = stationFilter.size > 0;
         const hasStn = sfActive && (STN_DATA[s.key] || []).some(c => stationFilter.has(c));
@@ -836,13 +881,19 @@ export function createMap(options = {}) {
         hexEls[i].classList.remove('route', 'route-start', 'route-dest', 'route-danger', 'khaak-safe', 'khaak-hive', 'khaak-near', 'terra');
         nodeEls[i].classList.remove('route-start', 'route-dest');
       }
+      const filterDim = filterActive && dim;
+      sectorFilterDim[i] = filterDim;
       hexEls[i].classList.toggle('dim', dim);
+      hexEls[i].classList.toggle('filter-dim', filterDim);
       hexEls[i].classList.toggle('sel', sel);
       hexEls[i].classList.toggle('adj', adj);
       nodeEls[i].classList.toggle('dim', dim);
+      nodeEls[i].classList.toggle('filter-dim', filterDim);
       nodeEls[i].classList.toggle('sel', sel);
       nodeEls[i].classList.toggle('adj', adj);
       labelEls[i].classList.toggle('dim', dim);
+      labelEls[i].classList.toggle('filter-dim', filterDim);
+      sectorDecorEls[i].forEach(el => el.classList.toggle('filter-dim', filterDim));
     });
     edgeEls.forEach(ln => {
       const a = +ln.dataset.a, b = +ln.dataset.b;
@@ -852,6 +903,7 @@ export function createMap(options = {}) {
         ln.classList.toggle('route', on);
         ln.classList.toggle('hot', false);
         ln.classList.toggle('dim', !on);
+        ln.classList.remove('filter-dim');
         ln.style.animationDirection = '';
         if (!ln._hw) {
           if (on) {
@@ -876,8 +928,11 @@ export function createMap(options = {}) {
         }
         const hot = selected != null && (a === selected || b === selected);
         ln.classList.toggle('hot', hot);
-        const dim = (selected != null && !hot) || (factionFilter && !(sectors[a].f === factionFilter && sectors[b].f === factionFilter)) || stationFilter.size > 0;
+        const dim = filterActive
+          ? sectorFilterDim[a] || sectorFilterDim[b]
+          : selected != null && !hot;
         ln.classList.toggle('dim', dim);
+        ln.classList.toggle('filter-dim', filterActive && dim);
       }
     });
     // intra-sector route bridges: connect each intermediate sector's entry gate to its exit gate
@@ -1165,7 +1220,7 @@ export function createMap(options = {}) {
       const c = b.dataset.fac;
       if (khaakMode) setKhaak(false); if (terraformMode) setTerraform(false);
       factionFilter = factionFilter === c ? null : c;
-      if (factionFilter) { stationFilter.clear(); stationFilterUpdate(); }
+      if (factionFilter) { disableShipLens(); stationFilter.clear(); stationFilterUpdate(); }
       host.querySelectorAll('.leg').forEach(x => x.classList.toggle('active', x.dataset.fac === factionFilter));
       refreshEmphasis();
     });
@@ -1202,7 +1257,7 @@ export function createMap(options = {}) {
       const c = b.dataset.stn;
       if (khaakMode) setKhaak(false); if (terraformMode) setTerraform(false);
       if (stationFilter.has(c)) stationFilter.delete(c); else stationFilter.add(c);
-      if (stationFilter.size) { factionFilter = null; document.querySelectorAll('.leg').forEach(x => x.classList.remove('active')); }
+      if (stationFilter.size) { disableShipLens(); factionFilter = null; document.querySelectorAll('.leg').forEach(x => x.classList.remove('active')); }
       update();
       if (stationFilter.size) fit();
     });

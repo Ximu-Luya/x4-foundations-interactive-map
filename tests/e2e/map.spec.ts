@@ -72,6 +72,32 @@ test('滚轮缩放平滑过渡', async ({ page }) => {
   expect(Number(afterScale)).toBeGreaterThan(Number(beforeScale))
 })
 
+test('图例筛选会按源站层级隐化非匹配星区及其附属图层', async ({ page }) => {
+  await page.goto('/?lang=zh-CN')
+
+  await page.getByRole('button', { name: 'Argon', exact: true }).click()
+  await expect(page.locator('.hex.filter-dim')).toHaveCount(140)
+  await expect(page.locator('.hex.filter-dim').first()).toHaveCSS('opacity', '0.16')
+  await expect(page.locator('.clabel.filter-dim:not(.show)').first()).toHaveCSS('opacity', '0')
+  expect(await page.locator('.gate-dot.filter-dim').count()).toBeGreaterThan(0)
+  expect(await page.locator('.stn-one.filter-dim').count()).toBeGreaterThan(0)
+
+  await page.getByRole('button', { name: 'Argon', exact: true }).click()
+  await page.getByRole('button', { name: '造船厂', exact: true }).click()
+  await expect(page.locator('.hex.stn-match')).toHaveCount(21)
+  await expect(page.locator('.hex.filter-dim')).toHaveCount(131)
+  await expect(page.locator('.label.filter-dim:not(.show)').first()).toHaveCSS('opacity', '0')
+
+  await page.getByRole('button', { name: '造船厂', exact: true }).click()
+  await page.locator('#lensShips').click()
+  expect(await page.locator('.hex.filter-dim').count()).toBeGreaterThan(100)
+  await expect(page.locator('#lensShips')).toHaveAttribute('aria-pressed', 'true')
+
+  await page.locator('#lensKhaak').evaluate((element) => (element as HTMLButtonElement).click())
+  await expect(page.locator('#lensShips')).toHaveAttribute('aria-pressed', 'false')
+  expect(await page.locator('.edge.filter-dim').count()).toBeGreaterThan(0)
+})
+
 test('路线深链、键盘平滑移动和输入隔离保持有效', async ({ page }) => {
   await page.goto('/?lang=zh-CN&from=Argon%20Prime&to=Earth')
   await expect(page.locator('#mapPanel .pnl-name')).toHaveText('地球')
