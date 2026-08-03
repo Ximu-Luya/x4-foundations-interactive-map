@@ -9,7 +9,7 @@
 - `src/domain/`：无 DOM 依赖的坐标、图结构、路线、距离、视图和校验算法。
 - `src/map/createMap.ts`：保持原 SVG 渲染行为的迁移适配层，从模块数据和翻译函数获取输入。
 - `src/map/MapShell.tsx`：React 管理的地图 DOM 契约和本地化控制区。
-- `src/ui/App.tsx`：多页面站点壳、语言切换、地图主页和 SEO 状态。
+- `src/ui/App.tsx`：单入口 SPA 路由、站点壳、语言切换和 SEO 状态。
 - `src/ui/FreeShipsPage.tsx`：免费舰船指南、图片灯箱、锚点和地图深链。
 
 `createMap.ts` 为降低一次性重写 1200 行 SVG 运行时造成的行为回归，暂时保留原控制流并设置 `@ts-nocheck`。它不再依赖 `window.X4_*`；稳定数据结构和核心算法已经迁出并受到 TypeScript 与单元测试约束。后续若继续声明式改写 SVG，应以现有 E2E 契约为迁移门禁，而不是直接删除适配层。
@@ -31,9 +31,11 @@
 
 - 英文星区名是数据连接和 URL 的稳定主键；中文只作为显示名和搜索别名。
 - `vv_x4_found` 与 `vv_x4_tl_found` 保留，已有浏览器发现记录无需迁移。
-- `window.X4Map` 保留 `selectSector`、`fit`、`setStyle`、`setLens`、`setKhaak`、`setTerraform`、`planRoute`、`route`，并新增 `panBy`。
+- `window.X4Map` 保留 `selectSector`、`fit`、`setStyle`、`setLens`、`setKhaak`、`setTerraform`、`planRoute`、`route`，并新增 `panBy`；`destroy` 仅用于 SPA 切页时释放地图监听器。
 - 语言优先级为 URL `lang`、`x4_map_locale` 本地存储、简体中文默认值。
-- `/` 为地图主页，`/free-ships/` 为免费舰船指南；两页共用语言状态和舰船数据。
+- `/` 为地图主页，`/free-ships/` 为免费舰船指南；客户端路由在同一个 `index.html` 内切换页面，两页共用语言状态和舰船数据。
+- 生产环境通过 `vercel.json` 将 `/free-ships/` 深链回退到根入口；静态资源使用根绝对路径，避免嵌套路由下加载失败。
+- 两个路由会在客户端更新标题和描述；单入口模式不再为免费舰船指南提供独立的初始 HTML 元数据。
 - 高频拖拽和键盘平移直接更新 SVG transform；坐标提交由 `requestAnimationFrame` 合并。
 
 ## 验证门禁

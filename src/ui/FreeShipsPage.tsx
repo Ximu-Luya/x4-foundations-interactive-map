@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'wouter'
 
 import { derelictShips, timelineShips } from '../data'
 import type { DerelictShip, TimelineShip } from '../data/types'
@@ -43,7 +44,7 @@ function activeLocale(language: string | undefined): SupportedLocale {
 function mapHref(locale: SupportedLocale, kind?: 'ship' | 'tlship', slug?: string) {
   const search = new URLSearchParams({ lang: locale })
   if (kind && slug) search.set(kind, slug)
-  return `../?${search.toString()}`
+  return `/?${search.toString()}`
 }
 
 function SectionHeading({
@@ -202,12 +203,12 @@ function DerelictDetailCard({
                 {t(`ships.${key}.role`, { defaultValue: ship.role })}
               </span>
             </div>
-            <a
+            <Link
               href={mapHref(locale, 'ship', ship.slug)}
               className="font-mono text-[10px] uppercase tracking-[0.16em] text-cyan hover:underline"
             >
               {t('free_ships_page.labels.on_map')} ↗
-            </a>
+            </Link>
           </div>
         </div>
         <dl className="grid grid-cols-1 gap-x-5 gap-y-3 text-[15px] sm:grid-cols-[120px_1fr]">
@@ -276,12 +277,12 @@ function TimelineDetailCard({
                 {t(`timeline_ships.${key}.role`, { defaultValue: ship.role })}
               </span>
             </div>
-            <a
+            <Link
               href={mapHref(locale, 'tlship', ship.slug)}
               className="font-mono text-[10px] uppercase tracking-[0.16em] text-purple-300 hover:underline"
             >
               {t('free_ships_page.labels.on_map')} ↗
-            </a>
+            </Link>
           </div>
         </div>
         <dl className="grid grid-cols-1 gap-x-5 gap-y-3 text-[15px] sm:grid-cols-[120px_1fr]">
@@ -371,9 +372,9 @@ export function FreeShipsPage() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(6,182,212,0.16),transparent_38%),radial-gradient(circle_at_78%_60%,rgba(249,115,22,0.10),transparent_35%)]" />
         <div className="relative mx-auto max-w-[1000px] px-5 py-16 md:px-8 md:py-20">
           <div className="mb-5 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-mute2">
-            <a href={mapHref(locale)} className="text-cyan hover:underline">
+            <Link href={mapHref(locale)} className="text-cyan hover:underline">
               {t('navigation.universe_map')}
-            </a>
+            </Link>
             <span>/</span>
             <span>{t('free_ships_page.hero.kicker')}</span>
           </div>
@@ -383,12 +384,12 @@ export function FreeShipsPage() {
           <p className="mt-6 max-w-3xl text-lg leading-relaxed text-mute">
             {t('free_ships_page.hero.intro')}
           </p>
-          <a
+          <Link
             href={mapHref(locale)}
             className="mt-7 inline-flex items-center gap-2 border border-cyan/50 bg-cyan/[0.06] px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-cyan2 transition-colors hover:bg-cyan/[0.12]"
           >
             {t('free_ships_page.hero.map_cta')} →
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -444,9 +445,9 @@ export function FreeShipsPage() {
           </ol>
           <p className="mt-6 text-sm text-mute2">
             {t('free_ships_page.ranking.map_prompt')}{' '}
-            <a href={mapHref(locale)} className="text-cyan hover:underline">
+            <Link href={mapHref(locale)} className="text-cyan hover:underline">
               {t('navigation.universe_map')}
-            </a>
+            </Link>
           </p>
         </div>
       </section>
@@ -483,9 +484,9 @@ export function FreeShipsPage() {
           </ol>
           <div className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-mute2">
             <span>{t('free_ships_page.timeline.note')}</span>
-            <a href={mapHref(locale)} className="text-purple-300 hover:underline">
+            <Link href={mapHref(locale)} className="text-purple-300 hover:underline">
               {t('free_ships_page.timeline.map_cta')}
-            </a>
+            </Link>
           </div>
         </div>
       </section>

@@ -1,22 +1,10 @@
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
 import { defineConfig } from 'vitest/config'
 
-const projectRoot = fileURLToPath(new URL('.', import.meta.url))
-
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [react(), tailwindcss()],
-  build: {
-    rollupOptions: {
-      input: {
-        main: path.resolve(projectRoot, 'index.html'),
-        freeShips: path.resolve(projectRoot, 'free-ships/index.html'),
-      },
-    },
-  },
   test: {
     environment: 'jsdom',
     globals: true,

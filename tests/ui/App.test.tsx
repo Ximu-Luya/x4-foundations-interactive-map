@@ -16,8 +16,13 @@ vi.mock('../../src/map/createMap', () => ({
     setLens: vi.fn(),
     setStyle: vi.fn(),
     setTerraform: vi.fn(),
+    destroy: vi.fn(),
   })),
 }))
+
+function renderApp() {
+  return render(<App />)
+}
 
 describe('完整页面', () => {
   beforeEach(async () => {
@@ -26,7 +31,7 @@ describe('完整页面', () => {
   })
 
   it('默认渲染中文地图和完整资料区', () => {
-    render(<App />)
+    renderApp()
     const mapRegion = screen.getByRole('region', { name: 'X4 交互式星区地图' })
     expect(mapRegion).toBeInTheDocument()
     expect(within(mapRegion).getByText('X4: 基石 · V9.0')).toBeInTheDocument()
@@ -47,8 +52,9 @@ describe('完整页面', () => {
   })
 
   it('英文资源可以完整渲染', async () => {
+    window.history.replaceState({}, '', '/?lang=en-US')
     await i18n.changeLanguage('en-US')
-    render(<App />)
+    renderApp()
     expect(screen.getByText('X4: Foundations · V9.0')).toBeInTheDocument()
     expect(screen.queryByText('SECTOR MAP')).not.toBeInTheDocument()
     expect(
@@ -62,7 +68,7 @@ describe('完整页面', () => {
 
   it('按独立路径渲染中文免费舰船指南和全部锚点', () => {
     window.history.replaceState({}, '', '/free-ships/?lang=zh-CN#ship-odysseus-vanguard')
-    const { container } = render(<App />)
+    const { container } = renderApp()
 
     expect(
       screen.getByRole('heading', { name: 'X4 废弃及无主舰船与位置', level: 1 }),
@@ -73,19 +79,34 @@ describe('完整页面', () => {
       within(container.querySelector('#ship-odysseus-vanguard')!).getByRole('link', {
         name: /在地图上显示/,
       }),
-    ).toHaveAttribute('href', '../?lang=zh-CN&ship=odysseus-vanguard')
+    ).toHaveAttribute('href', '/?lang=zh-CN&ship=odysseus-vanguard')
     expect(screen.queryByRole('region', { name: 'X4 交互式星区地图' })).not.toBeInTheDocument()
   })
 
   it('舰船图片灯箱支持打开和 Escape 关闭', async () => {
     window.history.replaceState({}, '', '/free-ships/?lang=zh-CN')
     const user = userEvent.setup()
-    render(<App />)
+    renderApp()
 
     await user.click(screen.getByRole('button', { name: '大交易所 I中的精英先锋型' }))
     expect(screen.getByRole('dialog', { name: '舰船图片' })).toBeInTheDocument()
 
     await user.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+  })
+
+  it('地图与免费舰船指南通过客户端路由切换', async () => {
+    const user = userEvent.setup()
+    renderApp()
+
+    await user.click(screen.getByRole('link', { name: '免费舰船指南' }))
+    expect(window.location.pathname).toBe('/free-ships/')
+    expect(
+      screen.getByRole('heading', { name: 'X4 废弃及无主舰船与位置', level: 1 }),
+    ).toBeInTheDocument()
+
+    await user.click(screen.getAllByRole('link', { name: '星区地图' })[0])
+    expect(window.location.pathname).toBe('/')
+    expect(screen.getByRole('region', { name: 'X4 交互式星区地图' })).toBeInTheDocument()
   })
 })

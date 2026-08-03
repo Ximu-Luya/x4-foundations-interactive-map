@@ -69,11 +69,9 @@ export function switchLocale(locale: SupportedLocale) {
   try {
     window.localStorage.setItem(localeStorageKey, locale)
   } catch {
-    // Query-string persistence still works when storage is unavailable.
+    // The URL query remains the persistence fallback when storage is unavailable.
   }
-  const url = new URL(window.location.href)
-  url.searchParams.set('lang', locale)
-  window.location.assign(url)
+  return i18n.changeLanguage(locale)
 }
 
 export default i18n

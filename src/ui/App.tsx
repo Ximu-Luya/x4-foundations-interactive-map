@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Analytics } from '@vercel/analytics/react'
+import { Link, Redirect, Route, Switch, useLocation, useSearch } from 'wouter'
 
 import { derelictShips, timelineShips, universeData } from '../data'
 import { localeMetadata, normalizeLocale, supportedLocales, switchLocale } from '../i18n'
@@ -11,20 +12,13 @@ const upstream = 'https://veanturverse.com'
 
 type SitePage = 'map' | 'free-ships'
 
-function currentPage(): SitePage {
-  return /\/free-ships\/(?:index\.html)?$/.test(window.location.pathname)
-    ? 'free-ships'
-    : 'map'
-}
-
-function localPageHref(page: SitePage, locale: string, fromPage: SitePage) {
+function localPageHref(page: SitePage, locale: string) {
   const search = new URLSearchParams({ lang: locale }).toString()
-  if (page === 'map') return `${fromPage === 'free-ships' ? '../' : './'}?${search}`
-  return `${fromPage === 'free-ships' ? './' : './free-ships/'}?${search}`
+  return `${page === 'map' ? '/' : '/free-ships/'}?${search}`
 }
 
 function guideHref(slug: string, locale: string) {
-  return `./free-ships/?lang=${encodeURIComponent(locale)}#ship-${slug}`
+  return `/free-ships/?lang=${encodeURIComponent(locale)}#ship-${slug}`
 }
 
 function ProjectName({ responsive = false }: { responsive?: boolean }) {
@@ -42,17 +36,19 @@ function ProjectName({ responsive = false }: { responsive?: boolean }) {
 
 function Header({ page }: { page: SitePage }) {
   const { t, i18n } = useTranslation()
+  const [pathname, navigate] = useLocation()
+  const searchString = useSearch()
   const [menuOpen, setMenuOpen] = useState(false)
   const activeLocale = normalizeLocale(i18n.resolvedLanguage ?? i18n.language) ?? 'en-US'
   const links = [
     {
       label: t('navigation.universe_map'),
-      href: localPageHref('map', activeLocale, page),
+      href: localPageHref('map', activeLocale),
       active: page === 'map',
     },
     {
       label: t('navigation.free_ships_guide'),
-      href: localPageHref('free-ships', activeLocale, page),
+      href: localPageHref('free-ships', activeLocale),
       active: page === 'free-ships',
     },
     { label: t('navigation.original_site'), href: upstream, external: true, active: false },
@@ -61,27 +57,37 @@ function Header({ page }: { page: SitePage }) {
   return (
     <header className="sticky top-0 z-40 h-16 border-b border-subtle/80 bg-base/95 backdrop-blur-xl">
       <div className="mx-auto flex h-full max-w-[1280px] items-center justify-between px-5 md:px-8">
-        <a
-          href={localPageHref('map', activeLocale, page)}
+        <Link
+          href={localPageHref('map', activeLocale)}
           className="whitespace-nowrap font-display text-xs font-black tracking-[0.1em] sm:text-sm sm:tracking-[0.14em] lg:text-base"
         >
           <span className="text-ink">
             <ProjectName responsive />
           </span>
-        </a>
+        </Link>
         <nav className="hidden items-center gap-4 font-mono text-sm uppercase tracking-[0.08em] text-mute md:flex">
-          {links.map(({ active, external, href, label }) => (
-            <a
-              key={href}
-              href={href}
-              target={external ? '_blank' : undefined}
-              rel={external ? 'noopener noreferrer' : undefined}
-              aria-current={active ? 'page' : undefined}
-              className={`transition-colors hover:text-cyan ${active ? 'text-cyan2' : ''}`}
-            >
-              {label}
-            </a>
-          ))}
+          {links.map(({ active, external, href, label }) =>
+            external ? (
+              <a
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-cyan"
+              >
+                {label}
+              </a>
+            ) : (
+              <Link
+                key={href}
+                href={href}
+                aria-current={active ? 'page' : undefined}
+                className={`transition-colors hover:text-cyan ${active ? 'text-cyan2' : ''}`}
+              >
+                {label}
+              </Link>
+            ),
+          )}
         </nav>
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -91,7 +97,14 @@ function Header({ page }: { page: SitePage }) {
               value={activeLocale}
               onChange={(event) => {
                 const locale = normalizeLocale(event.target.value)
-                if (locale && locale !== activeLocale) switchLocale(locale)
+                if (locale && locale !== activeLocale) {
+                  void switchLocale(locale)
+                  const search = new URLSearchParams(searchString)
+                  search.set('lang', locale)
+                  navigate(`${pathname}?${search.toString()}${window.location.hash}`, {
+                    replace: true,
+                  })
+                }
               }}
             >
               {supportedLocales.map((locale) => (
@@ -138,19 +151,29 @@ function Header({ page }: { page: SitePage }) {
       </div>
       {menuOpen ? (
         <nav className="absolute inset-x-0 top-16 flex flex-col gap-4 border-b border-line bg-base p-6 font-mono text-sm uppercase tracking-[0.12em] md:hidden">
-          {links.map(({ active, external, href, label }) => (
-            <a
-              key={href}
-              href={href}
-              target={external ? '_blank' : undefined}
-              rel={external ? 'noopener noreferrer' : undefined}
-              aria-current={active ? 'page' : undefined}
-              className={active ? 'text-cyan2' : undefined}
-              onClick={() => setMenuOpen(false)}
-            >
-              {label}
-            </a>
-          ))}
+          {links.map(({ active, external, href, label }) =>
+            external ? (
+              <a
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+              </a>
+            ) : (
+              <Link
+                key={href}
+                href={href}
+                aria-current={active ? 'page' : undefined}
+                className={active ? 'text-cyan2' : undefined}
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+              </Link>
+            ),
+          )}
         </nav>
       ) : null}
     </header>
@@ -226,18 +249,18 @@ function ShipSections() {
                     {t(`ships.${key}.find`, { defaultValue: ship.find })}
                   </p>
                   <div className="flex gap-4 font-mono text-[10px] uppercase tracking-[0.16em]">
-                    <a
+                    <Link
                       className="text-cyan2 hover:underline"
-                      href={`./?lang=${encodeURIComponent(locale)}&ship=${ship.slug}`}
+                      href={`/?lang=${encodeURIComponent(locale)}&ship=${ship.slug}`}
                     >
                       {t('content.show_on_map')}
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       className="text-mute2 hover:text-cyan"
                       href={guideHref(ship.slug, locale)}
                     >
                       {t('content.full_guide')}
-                    </a>
+                    </Link>
                   </div>
                 </li>
               )
@@ -278,18 +301,18 @@ function ShipSections() {
                     {t(`timeline_ships.${key}.find`, { defaultValue: ship.find })}
                   </p>
                   <div className="flex gap-4 font-mono text-[10px] uppercase tracking-[0.16em]">
-                    <a
+                    <Link
                       className="text-purple-300 hover:underline"
-                      href={`./?lang=${encodeURIComponent(locale)}&tlship=${ship.slug}`}
+                      href={`/?lang=${encodeURIComponent(locale)}&tlship=${ship.slug}`}
                     >
                       {t('content.show_on_map')}
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       className="text-mute2 hover:text-cyan"
                       href={guideHref(ship.slug, locale)}
                     >
                       {t('content.full_guide')}
-                    </a>
+                    </Link>
                   </div>
                 </li>
               )
@@ -350,9 +373,47 @@ function Footer() {
   )
 }
 
+function MapPage() {
+  const { i18n } = useTranslation()
+  const search = useSearch()
+  const mapKey = `${search}:${i18n.resolvedLanguage ?? i18n.language}`
+
+  return (
+    <>
+      <MapShell key={mapKey} />
+      <AboutContent />
+      <ShipSections />
+      <Faq />
+    </>
+  )
+}
+
+function LegacyFreeShipsRedirect() {
+  const search = useSearch()
+  return <Redirect replace to={`/free-ships/${search ? `?${search}` : ''}${window.location.hash}`} />
+}
+
+function ScrollToRoute({ hash }: { hash: string }) {
+  useEffect(() => {
+    if (hash) return
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+  }, [hash])
+  return null
+}
+
 export function App() {
   const { t, i18n } = useTranslation()
-  const page = currentPage()
+  const [pathname] = useLocation()
+  const search = useSearch()
+  const hash = window.location.hash
+  const page: SitePage = pathname.startsWith('/free-ships') ? 'free-ships' : 'map'
+
+  useEffect(() => {
+    const locale = normalizeLocale(new URLSearchParams(search).get('lang'))
+    const activeLocale = normalizeLocale(i18n.resolvedLanguage ?? i18n.language)
+    if (locale && locale !== activeLocale) void switchLocale(locale)
+  }, [i18n.language, i18n.resolvedLanguage, search])
 
   useEffect(() => {
     document.documentElement.lang =
@@ -367,18 +428,23 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-base text-ink">
+      <ScrollToRoute key={pathname} hash={hash} />
       <Header page={page} />
       <main>
-        {page === 'free-ships' ? (
-          <FreeShipsPage />
-        ) : (
-          <>
-            <MapShell />
-            <AboutContent />
-            <ShipSections />
-            <Faq />
-          </>
-        )}
+        <Switch>
+          <Route path="/">
+            <MapPage />
+          </Route>
+          <Route path="/free-ships/index.html">
+            <LegacyFreeShipsRedirect />
+          </Route>
+          <Route path="/free-ships">
+            <FreeShipsPage />
+          </Route>
+          <Route>
+            <MapPage />
+          </Route>
+        </Switch>
       </main>
       <Footer />
       <Analytics />

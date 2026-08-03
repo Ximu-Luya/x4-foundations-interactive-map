@@ -19,7 +19,7 @@ export function createMap(options = {}) {
   const tr = (key, fallback, values = {}) =>
     options.t ? options.t(key, { defaultValue: fallback, ...values }) : fallback;
   const sectorLabel = name => tr(`sectors.${name}`, name);
-  const guideHref = slug => `./free-ships/?lang=${encodeURIComponent(document.documentElement.lang || 'zh-CN')}#ship-${slug}`;
+  const guideHref = slug => `/free-ships/?lang=${encodeURIComponent(document.documentElement.lang || 'zh-CN')}#ship-${slug}`;
   const U = universeData;
   if (!U) { console.error('X4_UNIVERSE data missing'); return; }
   const SVGNS = 'http://www.w3.org/2000/svg';
@@ -984,9 +984,12 @@ export function createMap(options = {}) {
     lightbox.classList.remove('open');
     lightboxImg.removeAttribute('src');
   }
+  const onLightboxKeyDown = e => {
+    if (e.key === 'Escape' && lightbox?.classList.contains('open')) closeLightbox();
+  };
   if (lightbox) {
     lightbox.addEventListener('click', e => { if (e.target === lightbox || e.target.closest('.lb-close')) closeLightbox(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox(); });
+    document.addEventListener('keydown', onLightboxKeyDown);
   }
 
   // ---- detail panel ----
@@ -1118,6 +1121,11 @@ export function createMap(options = {}) {
     panel.querySelectorAll('[data-go]').forEach(li => li.onclick = () => { const t = +li.dataset.go; selectSector(t); flyTo(t); });
     panel.querySelectorAll('[data-fly]').forEach(li => li.onclick = () => flyTo(+li.dataset.fly));
     panel.querySelectorAll('.pnl-ship-img').forEach(im => im.onclick = (e) => { e.stopPropagation(); openLightbox(im.src, im.alt); });
+    panel.querySelectorAll('.pnl-ship-link').forEach(link => link.onclick = e => {
+      if (!options.navigate || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      options.navigate(link.getAttribute('href'));
+    });
     panel.querySelectorAll('[data-found]').forEach(b => b.onclick = (e) => { e.stopPropagation(); toggleFound(b.dataset.found); });
     panel.querySelectorAll('[data-found-tl]').forEach(b => b.onclick = (e) => { e.stopPropagation(); toggleFoundTl(b.dataset.foundTl); });
     const rs = panel.querySelector('[data-route-start]'); if (rs) rs.onclick = () => beginRoute(id);
@@ -1269,7 +1277,8 @@ export function createMap(options = {}) {
   document.getElementById('zoomOut').onclick = () => zoomAt(vw / 2, vh / 2, 1 / 1.3);
   document.getElementById('zoomFit').onclick = () => { if (khaakMode) setKhaak(false); if (terraformMode) setTerraform(false); clearSelection(); factionFilter = null; stationFilter.clear(); stationFilterUpdate(); document.querySelectorAll('.leg').forEach(x => x.classList.remove('active')); refreshEmphasis(); fit(); };
   document.querySelectorAll('[data-style-btn]').forEach(b => b.onclick = () => setStyle(b.dataset.styleBtn));
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && routeMode) cancelRoute(); });
+  const onRouteKeyDown = e => { if (e.key === 'Escape' && routeMode) cancelRoute(); };
+  document.addEventListener('keydown', onRouteKeyDown);
 
   // hover-info tooltip follows the pointer (always on; touch auto-disables it)
   svg.addEventListener('pointermove', e => {
@@ -1343,11 +1352,13 @@ export function createMap(options = {}) {
   setStyle('hex');
   buildLegend();
   buildStationFinder();
-  window.addEventListener('resize', () => { measure(); apply(); });
+  const onResize = () => { measure(); apply(); };
+  const onLoad = () => { measure(); if (selected == null) fit(); else apply(); };
+  window.addEventListener('resize', onResize);
   function init() { measure(); if (selected == null) fit(); else apply(); refreshEmphasis(); root.classList.add('ready'); }
   init();                                   // DOM is ready (script at end of body)
-  requestAnimationFrame(() => { init(); }); // re-fit once layout settles
-  window.addEventListener('load', () => { measure(); if (selected == null) fit(); else apply(); });
+  const initFrame = requestAnimationFrame(() => { init(); }); // re-fit once layout settles
+  window.addEventListener('load', onLoad);
 
   // deep link: ?ship=<slug>  or  ?sector=<Name>
   (function deepLink() {
@@ -1364,13 +1375,24 @@ export function createMap(options = {}) {
   // deep link handled in init section above
 
   // expose minimal api
-  window.X4Map = {
+  const api = {
     selectSector, fit, setStyle, setLens, setKhaak, setTerraform, planRoute, panBy,
     route: (fromName, toName) => {
       const a = sectors.findIndex(s => s.name.toLowerCase() === String(fromName).toLowerCase() || s.key.toLowerCase() === String(fromName).toLowerCase());
       const b = sectors.findIndex(s => s.name.toLowerCase() === String(toName).toLowerCase() || s.key.toLowerCase() === String(toName).toLowerCase());
       return (a >= 0 && b >= 0) ? planRoute(a, b) : null;
     },
+    destroy: () => {
+      cancelZoomAnimation();
+      if (panFrame) cancelAnimationFrame(panFrame);
+      cancelAnimationFrame(initFrame);
+      document.removeEventListener('keydown', onLightboxKeyDown);
+      document.removeEventListener('keydown', onRouteKeyDown);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('load', onLoad);
+      if (window.X4Map === api) delete window.X4Map;
+    },
   };
-  return window.X4Map;
+  window.X4Map = api;
+  return api;
 }

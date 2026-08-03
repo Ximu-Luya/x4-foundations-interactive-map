@@ -10,6 +10,7 @@ export interface X4MapApi {
   planRoute: (startId: number, destinationId: number) => number[] | null
   panBy: (x: number, y: number) => void
   route: (fromName: string, toName: string) => number[] | null
+  destroy: () => void
 }
 
 declare global {
