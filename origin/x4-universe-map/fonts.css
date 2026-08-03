@@ -1,0 +1,104 @@
+/* ──────────────────────────────────────────────────────────────────
+   Veanturverse — locally hosted webfonts
+   Self-hosted to avoid third-party data transfer to Google
+   (LG München I, 20.01.2022 — 3 O 17493/20).
+   Place the WOFF2 files in /fonts/ matching the filenames below.
+   font-display: swap → text is readable immediately while loading.
+   ────────────────────────────────────────────────────────────────── */
+
+/* ─── Orbitron (display) ─── */
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('fonts/orbitron-v29-latin-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('fonts/orbitron-v29-latin-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/orbitron-v29-latin-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('fonts/orbitron-v29-latin-800.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('fonts/orbitron-v29-latin-900.woff2') format('woff2');
+}
+
+/* ─── Rajdhani (UI / body) ─── */
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('fonts/rajdhani-v15-latin-300.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/rajdhani-v15-latin-regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('fonts/rajdhani-v15-latin-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('fonts/rajdhani-v15-latin-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/rajdhani-v15-latin-700.woff2') format('woff2');
+}
+
+/* ─── JetBrains Mono (code / terminals / data) ─── */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/jetbrains-mono-v18-latin-regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('fonts/jetbrains-mono-v18-latin-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/jetbrains-mono-v18-latin-700.woff2') format('woff2');
+}

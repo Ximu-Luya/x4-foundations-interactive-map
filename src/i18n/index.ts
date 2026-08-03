@@ -21,7 +21,7 @@ export const localeMetadata: Record<SupportedLocale, LocaleMetadata> = {
     sourceLanguage: false,
   },
   'en-US': {
-    languageName: 'English (United States)',
+    languageName: 'English',
     shortLabel: 'EN',
     sourceLanguage: true,
   },

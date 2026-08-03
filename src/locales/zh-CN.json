@@ -1,105 +1,105 @@
 {
   "site": {
-    "project_name": "X4 FOUNDATIONS INTERACTIVE MAP",
-    "project_name_short": "X4 SECTOR MAP"
+    "project_name": "X4: 基石交互式地图",
+    "project_name_short": "X4 星区地图"
   },
   "seo": {
-    "page_title": "X4 Foundations Interactive Sector Map v9.0, Free & Derelict Ships | Veanturverse",
+    "page_title": "X4: 基石 v9.0 交互式星区地图、免费及废弃舰船 | Veanturverse",
     "description": "适用于 v9.0 的 X4 交互式星系与星区地图，涵盖全部 DLC 的所有星区、势力和星门，并标出免费、废弃及无主舰船的位置，提供星门航线规划。支持拖动、缩放和搜索。",
-    "open_graph_title": "X4 Foundations Interactive Sector Map v9.0, Free & Derelict Ships",
+    "open_graph_title": "X4: 基石 v9.0 交互式星区地图、免费及废弃舰船",
     "open_graph_description": "探索完整的 X4: 基石宇宙，包括星区、势力、星门连接、免费/废弃舰船位置和航线规划。涵盖全部 DLC，适用于 v9.0。",
-    "twitter_description": "Full X4 sector map across all DLCs with free/derelict ship locations and a jump-gate route planner."
+    "twitter_description": "涵盖全部 DLC 的完整 X4 星区地图，标有免费/废弃舰船位置并提供星门航线规划。"
   },
   "free_ships_page": {
     "seo": {
-      "title": "X4 Abandoned Ships, Free & Derelict Ship Locations Guide | Veanturverse",
-      "description": "Every abandoned & derelict ship in X4: Foundations, exact sectors, coordinates and how to claim each one free, plus the best free ships ranked."
+      "title": "X4 免费、废弃及无主舰船位置指南 | Veanturverse",
+      "description": "汇总 X4: 基石中全部免费、废弃及无主舰船，提供精确星区、坐标、认领方法和免费舰船排行。"
     },
     "hero": {
-      "kicker": "Free Ships Guide",
-      "title": "X4 Abandoned & Derelict Ships and Locations",
-      "intro": "X4: Foundations is full of abandoned ships, ownerless derelicts just sitting there, from cheap scouts to full destroyers. Fly out, claim them in your spacesuit, and they're yours for free. Below: how claiming works, the best free ships ranked, every known location, and the nine Timelines reward ships (TL1 to TL9).",
-      "map_cta": "See every free ship on the interactive X4 sector map"
+      "kicker": "免费舰船指南",
+      "title": "X4 废弃及无主舰船与位置",
+      "intro": "X4: 基石中散落着大量无主弃船，从廉价侦察机到完整驱逐舰都有。穿太空服前往并完成认领，它们就能免费归你所有。下文包括认领方法、免费舰船排行、全部已知位置，以及九艘时间线奖励舰船（TL1 至 TL9）。",
+      "map_cta": "在 X4 交互式星区地图上查看全部免费舰船"
     },
     "ranking": {
-      "label": "The Shortlist",
-      "title": "The best free, derelict & abandoned ships in X4: Foundations",
-      "intro": "All six are free, but they aren't equal. Here are the abandoned & derelict ships ranked by what you get for the trip, from a full destroyer down to early-game scouts. Select any name for exact coordinates.",
-      "best_badge": "Best free ship",
-      "medium_badge": "Easiest medium",
-      "map_prompt": "Planning the trip? See every wreck on the interactive X4 sector map and plot a gate-by-gate route from your start sector.",
+      "label": "快速排行",
+      "title": "X4: 基石中最值得获取的免费、废弃及无主舰船",
+      "intro": "六艘舰船都能免费认领，但价值并不相同。下方按获取收益排序，从完整驱逐舰到前期侦察机；选择舰船名称即可跳转到精确坐标。",
+      "best_badge": "最佳免费舰船",
+      "medium_badge": "最易获取的中型舰船",
+      "map_prompt": "准备出发时，可在 X4 交互式星区地图上查看全部弃船，并从当前星区规划逐个星门的航线。",
       "items": {
-        "odysseus_vanguard": "Faulty Logic VII. A full L-class destroyer that spawns fully equipped; since 4.0 HF2 you can claim it solo by spacewalking to the bridge.",
-        "osprey_vanguard": "Company Regard. A free medium frigate and the best low-effort upgrade on the list.",
-        "drill_vanguard": "The Void. A free M-class miner and a useful early mining ship.",
-        "elite_vanguard": "Grand Exchange I. A fast early-game interceptor with a quick spacesuit claim.",
-        "perseus_vanguard": "Silent Witness XII. A free S-class fighter on the ecliptic.",
-        "courier_vanguard": "Nopileos' Fortune II. A free small courier near the highway exit."
+        "odysseus_vanguard": "错误逻辑 VII。一艘生成时配备完整装备的 L 级驱逐舰；从 4.0 HF2 起，可独自太空行走至舰桥完成认领。",
+        "osprey_vanguard": "公司关注。一艘免费的中型护卫舰，是清单中成本最低、收益最直接的升级。",
+        "drill_vanguard": "虚空。一艘免费的 M 级采矿船，适合在前期快速建立采矿能力。",
+        "elite_vanguard": "大交易所 I。一艘速度较快的前期截击机，可迅速通过太空服认领。",
+        "perseus_vanguard": "沉默的证人 XII。一艘位于黄道面上的免费 S 级战斗机。",
+        "courier_vanguard": "诺皮利奥斯的财富 II。一艘位于高速公路出口附近的免费小型快递船。"
       }
     },
     "timeline": {
-      "label": "Timelines DLC",
-      "title": "Timeline reward ships at a glance",
-      "intro": "The nine Timelines reward ships (TL1 to TL9) are unlocked by completing Timelines scenarios. Each appears in your save afterwards and can be claimed in a spacesuit.",
-      "note": "Timeline ships appear only after the matching Timelines mission is completed.",
-      "map_cta": "View these ships on the interactive X4 sector map",
+      "label": "时间线 DLC",
+      "title": "时间线奖励舰船速览",
+      "intro": "九艘时间线奖励舰船（TL1 至 TL9）需要通过完成对应的时间线场景解锁。解锁后，它们会出现在当前存档中，并可通过太空服认领。",
+      "note": "只有完成对应的时间线任务后，这些舰船才会出现。",
+      "map_cta": "在 X4 交互式星区地图上查看这些舰船",
       "items": {
-        "xenon_b": "Antigone Memorial. A Xenon frigate in the upper-left of the sector.",
-        "cutlass": "Heretic's End. A small fighter far south-west of the sector, outside the resource area.",
-        "elite_sport": "CEO's Doubt. A racing ship in the upper-right of the sector.",
-        "xenon_f": "Nopileos' Fortune II. A Xenon fighter in the lower-left cluster.",
-        "xenon_h": "Tharka's Cascade XV. A Xenon capital ship with Xenon patrols nearby.",
-        "kestrel_sport": "Freedom's Reach. A racing ship left of centre; watch for hidden Xenon asteroids.",
-        "odachi": "Getsu Fune. A gunboat high above the sector's gates.",
-        "sapporo": "Mists of Artemis. A destroyer near a Kha'ak hive.",
-        "theseus_sport": "Moo-Kye's Revenge. A racing ship toward the eastern end of the sector."
+        "xenon_b": "安提戈涅纪念碑。一艘位于星区左上方的 Xenon 护卫舰。",
+        "cutlass": "异端终结。一艘位于星区西南远端、资源区之外的小型战斗机。",
+        "elite_sport": "CEO的疑虑。一艘位于星区右上方的竞速船。",
+        "xenon_f": "诺皮利奥斯的财富 II。一艘位于左下方星区群的 Xenon 战斗机。",
+        "xenon_h": "塔卡的瀑布 XV。一艘附近存在 Xenon 巡逻队的 Xenon 主力舰。",
+        "kestrel_sport": "自由疆域。一艘位于中心左侧的竞速船；注意隐藏的 Xenon 小行星。",
+        "odachi": "月之舟。一艘位于星门平面高处的炮艇。",
+        "sapporo": "阿尔忒弥斯之雾。一艘位于 Kha'ak 巢穴附近的驱逐舰。",
+        "theseus_sport": "茂桂的复仇。一艘位于星区东端的竞速船。"
       }
     },
     "claiming": {
-      "label": "The Basics",
-      "title": "How to claim a derelict",
-      "scope": "Every ship size, S to XL",
+      "label": "基础方法",
+      "title": "如何认领废弃舰船",
+      "scope": "适用于 S 至 XL 的全部舰船尺寸",
       "steps": {
-        "1": "Fly to the ship and stop close to it.",
-        "2": "Leave your ship and enter your spacesuit (EVA).",
-        "3": "Press Shift+2, find the red pulsing light on the hull, and repair it. The ship is claimed automatically when the repair is complete.",
-        "4": "Assign a pilot or fly the ship home yourself."
+        "1": "飞到目标舰船附近并停下。",
+        "2": "离开当前舰船，进入太空服（EVA）状态。",
+        "3": "按 Shift+2，找到船体上红色闪烁的信号灯并进行维修。维修完成后，舰船会自动归你所有。",
+        "4": "指派一名驾驶员，或亲自将舰船开回去。"
       },
-      "how_title": "How claiming works",
-      "how_body": "A derelict is ownerless. Repairing the red pulsing light transfers it to you, using the same method for every ship size.",
-      "reset_title": "Reset note",
-      "reset_body": "Most ships are available only once per save. Their locations are fixed, but a claimed ship will not respawn there."
+      "how_title": "认领原理",
+      "how_body": "废弃舰船没有所有者。修复红色闪烁的信号灯后，舰船所有权会转移给你；所有舰船尺寸都采用相同方法。",
+      "reset_title": "存档说明",
+      "reset_body": "大多数舰船在每个存档中只能获取一次。位置固定不变，但已经认领的舰船不会在原处重新生成。"
     },
     "locations": {
-      "label": "The Map",
-      "title": "All abandoned & derelict ship locations",
-      "intro": "Each entry shows the ship, its sector, how to find it, and whether it is worth the detour. The screenshots show the exact location.",
-      "base_group": "Foundations · Base Game",
-      "timeline_group": "Timelines DLC · Reward Ships",
-      "timeline_intro": "These nine Timelines reward ships appear only after you complete the matching scenario. Several are Xenon hulls located in contested space."
+      "label": "位置地图",
+      "title": "全部废弃及无主舰船位置",
+      "intro": "每条记录均说明舰船类型、所在星区、寻找方法和是否值得绕行；截图展示应前往的精确位置。",
+      "base_group": "基石 · 基础游戏",
+      "timeline_group": "时间线 DLC · 奖励舰船",
+      "timeline_intro": "这九艘时间线奖励舰船只有在完成对应场景后才会出现，其中数艘 Xenon 舰船位于存在争夺的危险区域。"
     },
     "labels": {
-      "ship_count": "{count} {count, plural, one {ship} other {ships}}",
-      "ship_image": "The ship",
-      "map_location": "Map location",
-      "ship_number": "// Ship {number}",
-      "timeline_entry": "// {timeline} · Timeline",
-      "capital_ship": "Capital ship",
-      "on_map": "On map",
-      "sector": "Sector",
-      "coordinates": "Coordinates",
-      "find_it": "Find it",
-      "claim": "Claim",
-      "unlock": "Unlock",
-      "warning": "Warning",
-      "ship_alt": "{ship} in {sector}",
-      "location_alt": "{ship} location in {sector}"
+      "ship_count": "{count} {count, plural, one {艘舰船} other {艘舰船}}",
+      "ship_image": "舰船",
+      "map_location": "地图位置",
+      "ship_number": "// 舰船 {number}",
+      "timeline_entry": "// {timeline} · 时间线",
+      "capital_ship": "主力舰",
+      "on_map": "在地图上显示",
+      "sector": "星区",
+      "coordinates": "坐标",
+      "find_it": "寻找方法",
+      "claim": "认领方法",
+      "unlock": "解锁条件",
+      "warning": "警告",
+      "ship_alt": "{sector}中的{ship}",
+      "location_alt": "{ship}在{sector}中的位置"
     }
   },
   "navigation": {
-    "universe_map": "Sector Map",
-    "free_ships_guide": "Free Ships Guide",
-    "original_site": "Original Site",
+    "universe_map": "星区地图",
+    "free_ships_guide": "免费舰船指南",
+    "original_site": "原站",
     "home": "首页",
     "whats_new": "更新内容",
     "x4_foundations": "X4: 基石",
@@ -113,8 +113,8 @@
   "accessibility": {
     "open_menu": "打开菜单",
     "close_menu": "关闭菜单",
-    "select_language": "Select language",
-    "interactive_map": "Interactive X4 sector map",
+    "select_language": "选择语言",
+    "interactive_map": "X4 交互式星区地图",
     "ship_image": "舰船图片",
     "close_image": "关闭图片",
     "zoom_in": "放大",
@@ -123,10 +123,10 @@
     "close": "关闭"
   },
   "map": {
-    "kicker": "X4: Foundations · V9.0",
-    "title": "SECTOR MAP",
-    "derelict_ships": "舰船",
-    "timeline_ships": "时间线 DLC 舰船",
+    "kicker": "X4: 基石 · V9.0",
+    "title": "星区地图",
+    "derelict_ships": "废弃舰船",
+    "timeline_ships": "时间线舰船",
     "khaak_safe": "免受 Kha'ak 袭扰",
     "terraforming": "地球化改造",
     "plan_route": "规划航线",
@@ -137,13 +137,13 @@
     "plot_route": "绘制航线",
     "clear": "清除",
     "search_sector_placeholder": "搜索星区...",
-    "recenter_on_click": "Center after clicking a sector",
+    "recenter_on_click": "点击星区后居中",
     "drag_zoom_hint": "拖动平移 - 滚轮缩放 - 方向键 / WASD 移动 - 点击星区",
     "route_pick_hint": "点击起始星系 - 按 Esc 取消",
     "no_match": "无匹配结果",
     "find_a_station": "查找空间站",
-    "mobile_tools": "Map tools",
-    "legend": "Legend",
+    "mobile_tools": "地图工具",
+    "legend": "图例",
     "toggle_derelicts_title": "显示或隐藏废弃舰船和时间线奖励舰船的位置",
     "toggle_timeline_title": "显示或隐藏时间线奖励舰船的位置",
     "toggle_khaak_title": "高亮不会遭到 Kha'ak 袭击的星区（距巢穴超过 3 次跳跃）",
