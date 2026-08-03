@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'wouter'
 
 import { createMap } from './createMap'
 import { useMapKeyboard } from './keyboard'
@@ -7,6 +8,7 @@ import type { X4MapApi } from '../types/window'
 
 export function MapShell() {
   const { t } = useTranslation()
+  const [, navigate] = useLocation()
   const rootRef = useRef<HTMLElement>(null)
   const apiRef = useRef<X4MapApi | null>(null)
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false)
@@ -15,8 +17,13 @@ export function MapShell() {
   useMapKeyboard(rootRef, apiRef)
 
   useEffect(() => {
-    apiRef.current = createMap({ t }) ?? null
-  }, [t])
+    const api = createMap({ t, navigate }) ?? null
+    apiRef.current = api
+    return () => {
+      api?.destroy()
+      apiRef.current = null
+    }
+  }, [navigate, t])
 
   return (
     <section

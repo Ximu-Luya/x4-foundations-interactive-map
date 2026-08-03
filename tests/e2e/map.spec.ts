@@ -1,10 +1,23 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
-test('中文地图渲染完整数据并支持双语搜索', async ({ page }) => {
+function collectUnexpectedConsoleErrors(page: Page): string[] {
   const errors: string[] = []
   page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text())
+    if (message.type() !== 'error') return
+    const location = message.location().url
+    try {
+      const url = new URL(location)
+      if (url.hostname === '127.0.0.1' && url.pathname === '/_vercel/insights/script.js') return
+    } catch {
+      // Keep malformed or absent console locations visible to the assertion.
+    }
+    errors.push(message.text())
   })
+  return errors
+}
+
+test('中文地图渲染完整数据并支持双语搜索', async ({ page }) => {
+  const errors = collectUnexpectedConsoleErrors(page)
 
   await page.goto('/?lang=zh-CN')
   await expect(page.locator('.mt-kicker')).toHaveText('X4: 基石 · V9.0')
@@ -272,13 +285,16 @@ test('英文界面和旧页面地址保持兼容', async ({ page }) => {
   await page.goto('/guides/x4-universe-map.html?lang=zh-CN&sector=Earth')
   await page.waitForURL(/\?lang=zh-CN&sector=Earth$/)
   await expect(page.locator('#mapPanel .pnl-name')).toHaveText('地球')
+
+  await page.goto('/free-ships/index.html?lang=en-US#ship-sapporo')
+  await page.waitForURL(/\/free-ships\/\?lang=en-US#ship-sapporo$/)
+  await expect(
+    page.getByRole('heading', { name: 'X4 Abandoned & Derelict Ships and Locations', level: 1 }),
+  ).toBeVisible()
 })
 
 test('免费舰船指南支持锚点、图片灯箱和响应式布局', async ({ page }) => {
-  const errors: string[] = []
-  page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text())
-  })
+  const errors = collectUnexpectedConsoleErrors(page)
 
   await page.goto('/free-ships/?lang=zh-CN#ship-odysseus-vanguard')
   await expect(page.getByRole('heading', { name: 'X4 废弃及无主舰船与位置', level: 1 })).toBeVisible()
@@ -304,7 +320,7 @@ test('免费舰船指南支持锚点、图片灯箱和响应式布局', async ({
   await expect(page.locator('a[href*="veanturverse.com/guides/x4-derelict-ships"]')).toHaveCount(0)
   await expect(page.locator('#ship-sapporo').getByRole('link', { name: /在地图上显示/ })).toHaveAttribute(
     'href',
-    '../?lang=zh-CN&tlship=sapporo',
+    '/?lang=zh-CN&tlship=sapporo',
   )
   const hasHorizontalOverflow = await page.evaluate(
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
@@ -316,14 +332,30 @@ test('免费舰船指南支持锚点、图片灯箱和响应式布局', async ({
 test('地图和免费舰船指南可以保持语言双向跳转', async ({ page }) => {
   await page.goto('/?lang=zh-CN&ship=odysseus-vanguard')
   await expect(page.locator('#mapPanel .pnl-ship-name')).toHaveText('奥德修斯先锋型')
+  await page.evaluate(() => {
+    ;(window as typeof window & { __spaNavigationSentinel?: string }).__spaNavigationSentinel =
+      'alive'
+  })
 
   await page.locator('#mapPanel .pnl-ship-link').click()
   await page.waitForURL(/\/free-ships\/\?lang=zh-CN#ship-odysseus-vanguard$/)
   await expect(page.locator('#ship-odysseus-vanguard')).toBeInViewport()
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __spaNavigationSentinel?: string }).__spaNavigationSentinel,
+    ),
+  ).toBe('alive')
 
   await page.locator('#ship-odysseus-vanguard').getByRole('link', { name: /在地图上显示/ }).click()
   await page.waitForURL(/\?lang=zh-CN&ship=odysseus-vanguard$/)
   await expect(page.locator('#mapPanel .pnl-ship-name')).toHaveText('奥德修斯先锋型')
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __spaNavigationSentinel?: string }).__spaNavigationSentinel,
+    ),
+  ).toBe('alive')
 
   await page.goto('/free-ships/?lang=en-US')
   await expect(

@@ -22,4 +22,6 @@ if (!root) {
   throw new Error('Root element is missing')
 }
 
-ReactDOM.createRoot(root).render(<App />)
+ReactDOM.createRoot(root).render(
+  <App />,
+)

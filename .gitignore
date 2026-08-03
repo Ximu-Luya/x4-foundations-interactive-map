@@ -1,4 +1,5 @@
 .firecrawl/
+.crowdin-staging/
 node_modules/
 dist/
 coverage/
