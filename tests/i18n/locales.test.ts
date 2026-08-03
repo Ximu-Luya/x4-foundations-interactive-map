@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import {
   isArgumentElement,
   isDateElement,
@@ -10,11 +12,19 @@ import {
   parse,
   type MessageFormatElement,
 } from '@formatjs/icu-messageformat-parser'
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 
 import { universeData } from '../../src/data'
 import { localeMetadata, resolveInitialLocale, supportedLocales } from '../../src/i18n'
 import enUS from '../../src/locales/en-US.json'
-import zhCN from '../../src/locales/zh-CN.json'
+import trackedZhCN from '../../src/locales/zh-CN.json'
+
+const translationFile = process.env.I18N_TRANSLATION_FILE
+const requireCompleteTranslations = process.env.I18N_REQUIRE_COMPLETE === '1'
+const zhCN = translationFile
+  ? (JSON.parse(readFileSync(path.resolve(translationFile), 'utf8')) as typeof trackedZhCN)
+  : trackedZhCN
 
 const intentionallySharedWithSource = [
   'factions.ARG.short',
@@ -82,18 +92,24 @@ function parseMessage(locale: string, key: string, message: string): MessageForm
 }
 
 describe('本地化资源', () => {
-  it('中英文具有完全相同的键集合', () => {
-    expect(Object.keys(flattenMessages(zhCN)).sort()).toEqual(
-      Object.keys(flattenMessages(enUS)).sort(),
-    )
+  it('目标语言不包含源语言之外的键，严格模式要求完整覆盖', () => {
+    const sourceKeys = Object.keys(flattenMessages(enUS)).sort()
+    const translatedKeys = Object.keys(flattenMessages(zhCN)).sort()
+    const sourceKeySet = new Set(sourceKeys)
+
+    expect(translatedKeys.filter((key) => !sourceKeySet.has(key))).toEqual([])
+    if (requireCompleteTranslations) expect(translatedKeys).toEqual(sourceKeys)
   })
 
-  it('全部消息均符合 ICU 语法且保留源语言变量', () => {
+  it('已有译文均符合 ICU 语法且保留源语言变量', () => {
     const sourceMessages = flattenMessages(enUS)
     const translatedMessages = flattenMessages(zhCN)
-    Object.entries(sourceMessages).forEach(([key, source]) => {
+    Object.entries(sourceMessages).forEach(([key, source]) => parseMessage('en-US', key, source))
+    Object.entries(translatedMessages).forEach(([key, translation]) => {
+      if (!(key in sourceMessages)) return
+      const source = sourceMessages[key]
       const sourceAst = parseMessage('en-US', key, source)
-      const translatedAst = parseMessage('zh-CN', key, translatedMessages[key])
+      const translatedAst = parseMessage('zh-CN', key, translation)
       const structure = isStructurallySame(sourceAst, translatedAst)
       if (!structure.success) {
         throw new Error(`zh-CN 的 ${key} 与源语言 ICU 结构不一致`, { cause: structure.error })
@@ -110,7 +126,10 @@ describe('本地化资源', () => {
     const sharedMessages = Object.keys(sourceMessages)
       .filter((key) => sourceMessages[key] === translatedMessages[key])
       .sort()
-    expect(sharedMessages).toEqual([...intentionallySharedWithSource].sort())
+    const expectedSharedMessages = intentionallySharedWithSource
+      .filter((key) => key in translatedMessages)
+      .sort()
+    expect(sharedMessages).toEqual(expectedSharedMessages)
   })
 
   it('语言元数据覆盖所有语言且只有一个源语言', () => {
@@ -120,12 +139,12 @@ describe('本地化资源', () => {
 
   it('覆盖全部星区和阵营', () => {
     universeData.sectors.forEach((sector) => {
-      expect(zhCN.sectors).toHaveProperty(sector.name)
       expect(enUS.sectors).toHaveProperty(sector.name)
+      if (requireCompleteTranslations) expect(zhCN.sectors).toHaveProperty(sector.name)
     })
     Object.keys(universeData.factions).forEach((code) => {
-      expect(zhCN.factions).toHaveProperty(code)
       expect(enUS.factions).toHaveProperty(code)
+      if (requireCompleteTranslations) expect(zhCN.factions).toHaveProperty(code)
     })
   })
 

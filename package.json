@@ -16,6 +16,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "npm run build && playwright test",
+    "i18n:stage": "node scripts/stage-translation.mjs",
+    "i18n:check": "vitest run tests/i18n/locales.test.ts",
+    "i18n:check:complete": "I18N_REQUIRE_COMPLETE=1 vitest run tests/i18n/locales.test.ts",
+    "i18n:check:staging": "I18N_REQUIRE_COMPLETE=1 I18N_TRANSLATION_FILE=.crowdin-staging/zh-CN.json vitest run tests/i18n/locales.test.ts",
+    "i18n:publish": "node scripts/publish-translations.mjs",
     "verify:origin": "node scripts/verify-origin.mjs",
     "verify": "npm run verify:origin && npm run lint && npm run typecheck && npm test && npm run test:e2e"
   },
@@ -39,6 +44,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.6",
+    "@crowdin/cli": "4.15.0",
     "@formatjs/icu-messageformat-parser": "^3.5.15",
     "@playwright/test": "^1.62.0",
     "@tailwindcss/vite": "^4.3.3",

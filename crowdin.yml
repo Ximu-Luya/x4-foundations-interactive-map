@@ -1,5 +1,8 @@
-# Crowdin's native GitHub integration supplies project credentials.
-# Never add project IDs or personal access tokens to this file.
+# Crowdin CLI reads credentials from the local environment. The GitHub
+# integration keeps using its own connection; never commit credential values.
+project_id_env: CROWDIN_PROJECT_ID
+api_token_env: CROWDIN_PERSONAL_TOKEN
+base_path: .
 preserve_hierarchy: true
 commit_message: 'chore(i18n): 更新 Crowdin 翻译'
 append_commit_message: false

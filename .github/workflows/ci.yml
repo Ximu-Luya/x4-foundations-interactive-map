@@ -25,6 +25,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure target translations come from Crowdin
+        if: github.event_name == 'pull_request' && github.head_ref != 'l10n_main'
+        shell: bash
+        run: |
+          if ! git diff --quiet "origin/${GITHUB_BASE_REF}...HEAD" -- src/locales/zh-CN.json; then
+            echo "src/locales/zh-CN.json 只能由 Crowdin 的 l10n_main PR 修改。"
+            exit 1
+          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -34,6 +45,10 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Verify complete Crowdin translation
+        if: github.event_name == 'pull_request' && github.head_ref == 'l10n_main'
+        run: npm run i18n:check:complete
 
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium

@@ -1,10 +1,23 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
-test('中文地图渲染完整数据并支持双语搜索', async ({ page }) => {
+function collectUnexpectedConsoleErrors(page: Page): string[] {
   const errors: string[] = []
   page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text())
+    if (message.type() !== 'error') return
+    const location = message.location().url
+    try {
+      const url = new URL(location)
+      if (url.hostname === '127.0.0.1' && url.pathname === '/_vercel/insights/script.js') return
+    } catch {
+      // Keep malformed or absent console locations visible to the assertion.
+    }
+    errors.push(message.text())
   })
+  return errors
+}
+
+test('中文地图渲染完整数据并支持双语搜索', async ({ page }) => {
+  const errors = collectUnexpectedConsoleErrors(page)
 
   await page.goto('/?lang=zh-CN')
   await expect(page.locator('.mt-kicker')).toHaveText('X4: 基石 · V9.0')
@@ -275,10 +288,7 @@ test('英文界面和旧页面地址保持兼容', async ({ page }) => {
 })
 
 test('免费舰船指南支持锚点、图片灯箱和响应式布局', async ({ page }) => {
-  const errors: string[] = []
-  page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text())
-  })
+  const errors = collectUnexpectedConsoleErrors(page)
 
   await page.goto('/free-ships/?lang=zh-CN#ship-odysseus-vanguard')
   await expect(page.getByRole('heading', { name: 'X4 废弃及无主舰船与位置', level: 1 })).toBeVisible()
