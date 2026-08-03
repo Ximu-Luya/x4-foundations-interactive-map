@@ -36,16 +36,20 @@ function main() {
   if (head !== remoteMain) throw new Error('本地 main 与 origin/main 不一致，请先执行 git pull --ff-only')
 
   run(npmCommand, ['run', 'i18n:check:staging'])
-  run('crowdin', ['upload', 'sources', '--no-progress'])
+  run('crowdin', ['upload', 'sources', '--branch', 'main', '--no-progress'])
   run('crowdin', [
     'upload',
     'translations',
+    '--branch',
+    'main',
     '--language',
     'zh-CN',
     '--source',
-    '/src/locales/en-US.json',
+    'src/locales/en-US.json',
     '--translation',
-    '/.crowdin-staging/%locale%.json',
+    '.crowdin-staging/%locale%.json',
+    '--preserve-hierarchy',
+    '--import-eq-suggestions',
     '--no-auto-approve-imported',
     '--no-progress',
   ])
