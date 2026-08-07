@@ -4,7 +4,7 @@
     "project_name_short": "X4 星区地图"
   },
   "seo": {
-    "page_title": "X4: 基石 v9.0 交互式星区地图、免费及废弃舰船 | Veanturverse",
+    "page_title": "X4 Foundations Interactive Sector Map v9.0, Free & Derelict Ships",
     "description": "适用于 v9.0 的 X4 交互式星系与星区地图，涵盖全部 DLC 的所有星区、势力和星门，并标出免费、废弃及无主舰船的位置，提供星门航线规划。支持拖动、缩放和搜索。",
     "open_graph_title": "X4: 基石 v9.0 交互式星区地图、免费及废弃舰船",
     "open_graph_description": "探索完整的 X4: 基石宇宙，包括星区、势力、星门连接、免费/废弃舰船位置和航线规划。涵盖全部 DLC，适用于 v9.0。",
@@ -12,7 +12,7 @@
   },
   "free_ships_page": {
     "seo": {
-      "title": "X4 免费、废弃及无主舰船位置指南 | Veanturverse",
+      "title": "X4 Abandoned Ships, Free & Derelict Ship Locations Guide",
       "description": "汇总 X4: 基石中全部免费、废弃及无主舰船，提供精确星区、坐标、认领方法和免费舰船排行。"
     },
     "hero": {
