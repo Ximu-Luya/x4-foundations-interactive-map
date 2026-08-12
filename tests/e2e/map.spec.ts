@@ -54,6 +54,39 @@ test('Tailwind v4 自定义主题通过 Vite 插件生效', async ({ page }) => 
   expect(stationFinderOverflow).toBe(false)
 })
 
+test('故事线页面可访问并按开局高亮路径', async ({ page }) => {
+  const errors = collectUnexpectedConsoleErrors(page)
+  await page.goto('/storylines/?lang=en-US')
+
+  await expect(page.getByRole('heading', { name: 'From every start to every major storyline' })).toBeVisible()
+  await expect(page.locator('.story-start-button')).toHaveCount(9)
+  await expect(page.locator('[data-node-id="start-young-gun"]')).toHaveClass(/is-selected/)
+
+  await page.getByRole('button', { name: /Fires of Defeat/ }).click()
+  await expect(page.locator('[data-node-id="start-fires"]')).toHaveClass(/is-selected/)
+  await expect(page.locator('[data-node-id="fires-revenge"]')).toHaveClass(/is-active/)
+  await expect(page.locator('[data-node-id="spear-claim"]')).toHaveCount(0)
+  await expect(page.locator('[data-node-id="outcome-yaki-trade"]')).toHaveClass(/is-active/)
+
+  const fittedChart = await page.locator('.story-chart-scroll').evaluate((element) => ({
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
+  }))
+  expect(fittedChart.scrollWidth).toBe(fittedChart.clientWidth)
+
+  await page.getByRole('button', { name: 'Zoom in' }).click()
+  await expect(page.locator('.story-chart-controls')).toContainText('125%')
+  const zoomedChart = await page.locator('.story-chart-scroll').evaluate((element) => ({
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
+  }))
+  expect(zoomedChart.scrollWidth).toBeGreaterThan(zoomedChart.clientWidth)
+
+  await page.getByRole('button', { name: 'Fit to window' }).click()
+  await expect(page.locator('.story-chart-controls')).toContainText('100%')
+  expect(errors).toEqual([])
+})
+
 test('语言下拉框保留当前页面参数并支持键盘原生选择', async ({ page }) => {
   await page.goto('/?lang=zh-CN&from=Argon%20Prime&to=Earth')
 
