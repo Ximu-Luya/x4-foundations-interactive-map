@@ -50,7 +50,7 @@ function main() {
     '.crowdin-staging/%locale%.json',
     '--preserve-hierarchy',
     '--import-eq-suggestions',
-    '--no-auto-approve-imported',
+    '--auto-approve-imported',
     '--no-progress',
   ])
 

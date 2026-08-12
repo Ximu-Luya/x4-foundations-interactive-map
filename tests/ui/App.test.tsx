@@ -95,6 +95,25 @@ describe('完整页面', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
   })
 
+  it('故事线页面可从导航进入并按开局高亮完整路线', async () => {
+    window.history.replaceState({}, '', '/?lang=en-US')
+    await i18n.changeLanguage('en-US')
+    const user = userEvent.setup()
+    renderApp()
+
+    await user.click(screen.getByRole('link', { name: 'Storylines' }))
+    expect(window.location.pathname).toBe('/storylines/')
+    expect(screen.getByRole('heading', { name: 'From every start to every major storyline', level: 1 })).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: /Split Vendetta/ })).toHaveLength(2)
+
+    const firesButton = screen.getByRole('button', { name: /Fires of Defeat/ })
+    await user.click(firesButton)
+    expect(firesButton).toHaveAttribute('aria-pressed', 'true')
+    expect(document.querySelector('[data-node-id="fires-revenge"]')).toHaveClass('is-active')
+    expect(document.querySelector('[data-node-id="spear-claim"]')).not.toBeInTheDocument()
+    expect(document.querySelector('[data-node-id="diplomacy-ready"]')).toHaveClass('is-active')
+  })
+
   it('地图与免费舰船指南通过客户端路由切换', async () => {
     const user = userEvent.setup()
     renderApp()
