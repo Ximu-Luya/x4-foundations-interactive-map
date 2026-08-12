@@ -7,14 +7,16 @@ import { derelictShips, timelineShips, universeData } from '../data'
 import { localeMetadata, normalizeLocale, supportedLocales, switchLocale } from '../i18n'
 import { MapShell } from '../map/MapShell'
 import { FreeShipsPage } from './FreeShipsPage'
+import { StorylinesPage } from './StorylinesPage'
 
 const upstream = 'https://veanturverse.com'
 
-type SitePage = 'map' | 'free-ships'
+type SitePage = 'map' | 'free-ships' | 'storylines'
 
 function localPageHref(page: SitePage, locale: string) {
   const search = new URLSearchParams({ lang: locale }).toString()
-  return `${page === 'map' ? '/' : '/free-ships/'}?${search}`
+  const path = page === 'map' ? '/' : `/${page}/`
+  return `${path}?${search}`
 }
 
 function guideHref(slug: string, locale: string) {
@@ -50,6 +52,11 @@ function Header({ page }: { page: SitePage }) {
       label: t('navigation.free_ships_guide'),
       href: localPageHref('free-ships', activeLocale),
       active: page === 'free-ships',
+    },
+    {
+      label: t('navigation.storylines'),
+      href: localPageHref('storylines', activeLocale),
+      active: page === 'storylines',
     },
     { label: t('navigation.original_site'), href: upstream, external: true, active: false },
   ]
@@ -407,7 +414,11 @@ export function App() {
   const [pathname] = useLocation()
   const search = useSearch()
   const hash = window.location.hash
-  const page: SitePage = pathname.startsWith('/free-ships') ? 'free-ships' : 'map'
+  const page: SitePage = pathname.startsWith('/free-ships')
+    ? 'free-ships'
+    : pathname.startsWith('/storylines')
+      ? 'storylines'
+      : 'map'
 
   useEffect(() => {
     const locale = normalizeLocale(new URLSearchParams(search).get('lang'))
@@ -418,9 +429,18 @@ export function App() {
   useEffect(() => {
     document.documentElement.lang =
       normalizeLocale(i18n.resolvedLanguage ?? i18n.language) ?? 'en-US'
-    const titleKey = page === 'free-ships' ? 'free_ships_page.seo.title' : 'seo.page_title'
+    const titleKey =
+      page === 'free-ships'
+        ? 'free_ships_page.seo.title'
+        : page === 'storylines'
+          ? 'storylines.seo.title'
+          : 'seo.page_title'
     const descriptionKey =
-      page === 'free-ships' ? 'free_ships_page.seo.description' : 'seo.description'
+      page === 'free-ships'
+        ? 'free_ships_page.seo.description'
+        : page === 'storylines'
+          ? 'storylines.seo.description'
+          : 'seo.description'
     document.title = t(titleKey)
     const description = document.querySelector<HTMLMetaElement>('meta[name="description"]')
     if (description) description.content = t(descriptionKey)
@@ -440,6 +460,9 @@ export function App() {
           </Route>
           <Route path="/free-ships">
             <FreeShipsPage />
+          </Route>
+          <Route path="/storylines">
+            <StorylinesPage />
           </Route>
           <Route>
             <MapPage />

@@ -92,6 +92,12 @@ function parseMessage(locale: string, key: string, message: string): MessageForm
 }
 
 describe('本地化资源', () => {
+  it('英文产品文案不包含源站品牌', () => {
+    expect(Object.values(flattenMessages(enUS)).filter((message) => /Veanturverse/i.test(message))).toEqual(
+      [],
+    )
+  })
+
   it('目标语言不包含源语言之外的键，严格模式要求完整覆盖', () => {
     const sourceKeys = Object.keys(flattenMessages(enUS)).sort()
     const translatedKeys = Object.keys(flattenMessages(zhCN)).sort()
