@@ -98,6 +98,7 @@
   },
   "navigation": {
     "universe_map": "Sector Map",
+    "storylines": "Storylines",
     "free_ships_guide": "Free Ships Guide",
     "original_site": "Original Site",
     "home": "Home",
@@ -109,6 +110,125 @@
     "impressum": "Impressum",
     "privacy": "Datenschutz",
     "disclosure": "Disclosure"
+  },
+  "storylines": {
+    "seo": {
+      "title": "X4 Starts, Storylines & Endings Interactive Flowchart",
+      "description": "Select any X4 start to highlight its exclusive missions, headquarters route, shared plots, decisions and possible endings."
+    },
+    "hero": {
+      "kicker": "X4: Foundations · Starts & Plots",
+      "title": "From every start to every major storyline",
+      "intro": "Select a start to highlight its complete reachable route. The chart preserves start-specific missions and headquarters acquisition before merging shared plots and branch endings.",
+      "scope": "Scope: base game, Split Vendetta and Cradle of Humanity, following the supplied reference chart.",
+      "clear": "Show all routes"
+    },
+    "labels": {
+      "select_start": "Select a start",
+      "selected_route": "Selected route",
+      "headquarters_route": "Headquarters route",
+      "exclusive_route": "Start-specific route",
+      "shared_route": "Shared plots after convergence",
+      "all_prerequisites": "requires both prerequisites",
+      "exclusive": "start-specific",
+      "unlock_start": "unlocked start",
+      "base": "Base game",
+      "split": "Split Vendetta",
+      "cradle": "Cradle of Humanity",
+      "mission": "Mission / plot",
+      "state": "Unlocked state",
+      "decision": "Decision",
+      "outcome": "Possible outcome",
+      "requires": "Prerequisite",
+      "dimmed_hint": "Other routes are dimmed; every bright node and line belongs to the selected start.",
+      "diagram_aria": "Interactive X4 starts and storylines flowchart",
+      "zoom_out": "Zoom out",
+      "zoom_in": "Zoom in",
+      "fit": "Fit to window",
+      "zoom_level": "Zoom {percent}%"
+    },
+    "nodes": {
+      "start_young_gun": "The Young Gun",
+      "start_entrepreneur": "The Untested Entrepreneur",
+      "start_warrior": "The Dedicated Warrior",
+      "start_explorer": "The Accomplished Scientist",
+      "start_scientist": "The Unworthy Entrepreneur",
+      "start_fires": "Fires of Defeat",
+      "start_spear": "Spear of the Patriarch",
+      "start_cadet": "Terran Cadet",
+      "start_genesis": "Project Genesis",
+      "fires_revenge": "Defeat the Zyarth Patriarchy",
+      "spear_claim": "Claim Argon sectors",
+      "phq_standard": "Player Headquarters plot",
+      "phq_terran": "Terran Cadet / Solborn Militia plot",
+      "phq_pioneer": "Pioneer opening plot\n(complete the first Photon Barrage)",
+      "headquarters": "Player Headquarters acquired",
+      "hatikvah": "Hatikvah's Choice plot",
+      "solborn": "Solborn Militia / Terran plot",
+      "project_genesis_plot": "Project Genesis plot",
+      "project_genesis_plot_note": "available after headquarters",
+      "diplomacy_ready": "Headquarters + Hatikvah completed",
+      "paranid": "Paranid Civil War plot",
+      "free_families": "Free Families conflict plot",
+      "covert": "Covert Operations plot",
+      "yaki": "Fate of the Yaki plot",
+      "decision_paranid": "Choose the Paranid outcome",
+      "decision_free_families": "Choose the Split outcome",
+      "decision_covert": "Choose the covert intervention",
+      "decision_yaki_threat": "What threat are the Yaki?",
+      "decision_yaki_amplifier": "What happens to the amplifier?",
+      "outcome_paranid_unify": "Unify the Paranid",
+      "outcome_paranid_escalate": "Civil war escalates",
+      "outcome_paranid_war": "Unified Paranid declares external wars",
+      "outcome_zya": "Help the Zyarth Patriarchy win",
+      "outcome_rebellion": "Help the Free Families become independent",
+      "outcome_none": "No world-state change",
+      "outcome_terran_war": "Terran Protectorate declares war on Argon and Antigone",
+      "outcome_trade_break": "Argon Federation and Antigone Republic sever trade ties",
+      "outcome_yaki_purge": "Terrans begin a campaign to purge the Yaki",
+      "outcome_xenon_sol": "A Xenon invasion targets the Solar System",
+      "outcome_yaki_trade": "Yaki trade with the wider universe is restored"
+    },
+    "starts": {
+      "shared": {
+        "standard_headquarters": "Enter the standard Player Headquarters plot, then converge on the shared headquarters state.",
+        "no_exclusive": "No start-exclusive plot is shown in the source chart; shared major plots remain available after their prerequisites."
+      },
+      "young_gun": {
+        "summary": "Base-game sandbox start; obtain the headquarters through the standard PHQ plot, then enter the shared story network."
+      },
+      "entrepreneur": {
+        "summary": "Trade-focused base-game start; its major story route converges through the standard PHQ plot."
+      },
+      "warrior": {
+        "summary": "Combat-focused base-game start; its major story route converges through the standard PHQ plot."
+      },
+      "explorer": {
+        "summary": "Unlocked base-game start; its major story route converges through the standard PHQ plot."
+      },
+      "scientist": {
+        "summary": "Unlocked scientist start that begins with the player headquarters already available.",
+        "headquarters": "Skips the standard PHQ acquisition plot and starts from the headquarters-unlocked state."
+      },
+      "fires": {
+        "summary": "Split start with an exclusive anti-Zyarth opening, alongside access to the common story network.",
+        "exclusive": "Exclusive objective: defeat the Zyarth Patriarchy."
+      },
+      "spear": {
+        "summary": "Split start with an exclusive objective to claim Argon territory, then access to shared plots.",
+        "exclusive": "Exclusive objective: claim Argon sectors."
+      },
+      "cadet": {
+        "summary": "Terran start that enters through the Solborn Militia/Terran opening and the Terran version of headquarters acquisition.",
+        "headquarters": "The Terran opening leads into its headquarters acquisition route before convergence.",
+        "exclusive": "Its opening is the Solborn Militia/Terran plot, which also leads toward Covert Operations and the Yaki plot."
+      },
+      "genesis": {
+        "summary": "Pioneer start with its own opening and headquarters acquisition before joining the shared plots.",
+        "headquarters": "Complete the Pioneer opening milestone to obtain the headquarters, then converge on the shared state.",
+        "exclusive": "The Project Genesis opening is unique to this start; the later Project Genesis plot is available from the headquarters state."
+      }
+    }
   },
   "accessibility": {
     "open_menu": "Open menu",
