@@ -98,6 +98,7 @@
   },
   "navigation": {
     "universe_map": "星区地图",
+    "storylines": "开局与故事线",
     "free_ships_guide": "免费舰船指南",
     "original_site": "原站",
     "home": "首页",
@@ -109,6 +110,125 @@
     "impressum": "法律声明",
     "privacy": "隐私政策",
     "disclosure": "披露声明"
+  },
+  "storylines": {
+    "seo": {
+      "title": "X4 开局、故事线与结局交互流程图",
+      "description": "选择任一 X4 开局，高亮其独享任务、总部路线、公共剧情、选择点和可能结局。"
+    },
+    "hero": {
+      "kicker": "X4：基石 · 开局与剧情",
+      "title": "从每一种开局，看完整主要故事线",
+      "intro": "点击任一开局，高亮其全部可达任务、总部取得方式、共同前置、选择点与可能结局。各开局先独立梳理，到公共任务节点后再合并。",
+      "scope": "当前范围：本体、S 族分裂和人类的摇篮，按你提供的原始流程图整理。",
+      "clear": "显示全部路线"
+    },
+    "labels": {
+      "select_start": "选择一个开局",
+      "selected_route": "当前高亮路线",
+      "headquarters_route": "总部取得方式",
+      "exclusive_route": "开局独享路线",
+      "shared_route": "合流后的公共剧情",
+      "all_prerequisites": "须同时完成两项前置",
+      "exclusive": "开局独享",
+      "unlock_start": "二周目解锁开局",
+      "base": "本体故事线",
+      "split": "S 族分裂",
+      "cradle": "人类的摇篮",
+      "mission": "任务／故事线",
+      "state": "已解锁状态",
+      "decision": "选择点",
+      "outcome": "可能结局",
+      "requires": "前置条件",
+      "dimmed_hint": "其余路线已淡化；亮起的节点和连线均属于所选开局。",
+      "diagram_aria": "X4 各开局与故事线交互流程图",
+      "zoom_out": "缩小",
+      "zoom_in": "放大",
+      "fit": "适应窗口",
+      "zoom_level": "缩放 {percent}%"
+    },
+    "nodes": {
+      "start_young_gun": "初生牛犊",
+      "start_entrepreneur": "新兴的创业家",
+      "start_warrior": "职业军人",
+      "start_explorer": "新手探险家",
+      "start_scientist": "颇有成就的科学家",
+      "start_fires": "失败之火",
+      "start_spear": "族长之矛",
+      "start_cadet": "Terran 军官学员",
+      "start_genesis": "创世计划",
+      "fires_revenge": "消灭扎亚斯叛乱队",
+      "spear_claim": "夺取 Argon 星区",
+      "phq_standard": "玩家总部任务线",
+      "phq_terran": "暗夜民兵／特勤处任务线",
+      "phq_pioneer": "玩家总部任务线\n（赛格瑞斯先驱者版）",
+      "headquarters": "得到玩家总部",
+      "hatikvah": "希望之歌任务线",
+      "solborn": "暗夜民兵／特勤处任务线",
+      "project_genesis_plot": "创世计划任务线",
+      "project_genesis_plot_note": "取得总部后可进入",
+      "diplomacy_ready": "玩家总部＋希望之歌均已完成",
+      "paranid": "Paranid 内战任务线",
+      "free_families": "自由部族联盟任务线",
+      "covert": "隐秘计划任务线",
+      "yaki": "Yaki 的宿命任务线",
+      "decision_paranid": "选择 Paranid 结局",
+      "decision_free_families": "选择 S 族结局",
+      "decision_covert": "选择隐秘行动结果",
+      "decision_yaki_threat": "如何判断 Yaki 威胁",
+      "decision_yaki_amplifier": "如何处置增幅器",
+      "outcome_paranid_unify": "Paranid 统一",
+      "outcome_paranid_escalate": "内战加剧",
+      "outcome_paranid_war": "统一帝国向接壤主要势力宣战",
+      "outcome_zya": "协助扎亚斯氏族获胜",
+      "outcome_rebellion": "协助起义军独立",
+      "outcome_none": "无事发生",
+      "outcome_terran_war": "地球保护国向 Argon 与 Antigone 宣战",
+      "outcome_trade_break": "Argon 与 Antigone 断绝贸易往来",
+      "outcome_yaki_purge": "干预者开始清剿 Yaki 海盗",
+      "outcome_xenon_sol": "Xenon 大举入侵太阳系",
+      "outcome_yaki_trade": "恢复 Yaki 与其它势力的贸易"
+    },
+    "starts": {
+      "shared": {
+        "standard_headquarters": "先进入标准玩家总部任务线；取得总部后，再与其它开局合流。",
+        "no_exclusive": "原图没有标出开局独享任务；完成相应前置后，可进入公共主要故事线。"
+      },
+      "young_gun": {
+        "summary": "本体沙盒开局；从标准玩家总部任务线进入公共剧情网络。"
+      },
+      "entrepreneur": {
+        "summary": "贸易向本体开局；主要剧情从标准玩家总部任务线合流。"
+      },
+      "warrior": {
+        "summary": "战斗向本体开局；主要剧情从标准玩家总部任务线合流。"
+      },
+      "explorer": {
+        "summary": "二周目解锁的本体开局；主要剧情从标准玩家总部任务线合流。"
+      },
+      "scientist": {
+        "summary": "二周目解锁开局；起步时已经拥有玩家总部。",
+        "headquarters": "跳过标准总部取得任务，直接从“已得到玩家总部”状态开始。"
+      },
+      "fires": {
+        "summary": "S 族开局；带有消灭扎亚斯叛乱队的独享目标，也能进入公共剧情。",
+        "exclusive": "独享任务：消灭扎亚斯叛乱队。"
+      },
+      "spear": {
+        "summary": "S 族开局；带有夺取 Argon 星区的独享目标，也能进入公共剧情。",
+        "exclusive": "独享任务：夺取 Argon 星区。"
+      },
+      "cadet": {
+        "summary": "Terran 开局；先进入暗夜民兵／特勤处路线，并通过人类版本总部任务取得总部。",
+        "headquarters": "Terran 开场任务继续到人类版本的总部取得路线，之后与公共剧情合流。",
+        "exclusive": "开局专属入口是暗夜民兵／特勤处，后续也通向隐秘计划与 Yaki 的宿命。"
+      },
+      "genesis": {
+        "summary": "先驱者开局；有自己的开场与总部取得方式，之后进入公共剧情。",
+        "headquarters": "完成先驱者版总部任务的开场里程碑后取得总部，再与公共剧情合流。",
+        "exclusive": "创世计划开场属于该开局；取得总部后还可继续对应的创世计划剧情。"
+      }
+    }
   },
   "accessibility": {
     "open_menu": "打开菜单",
