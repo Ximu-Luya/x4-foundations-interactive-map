@@ -36,6 +36,7 @@
     "@fontsource/orbitron": "^5.3.0",
     "@fontsource/rajdhani": "^5.3.0",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^1.1.0",
     "i18next": "^26.3.6",
     "i18next-icu": "^2.4.4",
     "react": "^19.2.8",
