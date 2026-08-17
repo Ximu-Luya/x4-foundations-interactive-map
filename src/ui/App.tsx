@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import { Link, Redirect, Route, Switch, useLocation, useSearch } from 'wouter'
 
 import { derelictShips, timelineShips, universeData } from '../data'
@@ -471,6 +472,7 @@ export function App() {
       </main>
       <Footer />
       <Analytics />
+      <SpeedInsights />
     </div>
   )
 }
