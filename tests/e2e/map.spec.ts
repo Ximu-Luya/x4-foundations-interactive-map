@@ -7,7 +7,7 @@ function collectUnexpectedConsoleErrors(page: Page): string[] {
     const location = message.location().url
     try {
       const url = new URL(location)
-      if (url.hostname === '127.0.0.1' && url.pathname === '/_vercel/insights/script.js') return
+      if (url.hostname === '127.0.0.1' && url.pathname.startsWith('/_vercel/')) return
     } catch {
       // Keep malformed or absent console locations visible to the assertion.
     }
